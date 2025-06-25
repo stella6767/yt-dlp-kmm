@@ -5,10 +5,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.io.BufferedReader
@@ -31,8 +27,10 @@ class YTDlpService(
         fileName: String,
         saveToDirectory: String,
         additionalArguments: String,
+        ytDlpPath: String,
         onStateUpdate: (DownloadState) -> Unit
     ): Pair<Int, String> {
+
 
         val await = scope.async(Dispatchers.IO) {
 
@@ -40,17 +38,8 @@ class YTDlpService(
                 onStateUpdate(DownloadState.Downloading("초기화 중...", "")) // 초기 상태 전달
                 //currentProcessJob = coroutineContext[Job] // 현재 코루틴 Job을 추적하여 abort에서 취소 가능하게 함
 
-                val command = mutableListOf<String>()
-                command.add("")
-
-                val outputPath = "$saveToDirectory${File.separator}$fileName"
-                command.add("-o")
-                command.add(outputPath)
-                command.add(url)
-
-                if (additionalArguments.isNotBlank()) {
-                    command.addAll(additionalArguments.split(" ").filter { it.isNotBlank() })
-                }
+                val command =
+                    buildCommand(ytDlpPath, url, fileName, saveToDirectory, additionalArguments)
 
                 println("실행할 명령: ${command.joinToString(" ")}")
                 executeCommandSync(command)
@@ -59,7 +48,6 @@ class YTDlpService(
 
         return await
     }
-
 
 
 //    // 다운로드 중단 함수
@@ -94,6 +82,9 @@ class YTDlpService(
 
             var line: String?
             while (reader.readLine().also { line = it } != null) {
+
+
+
                 outputStringBuilder.append(line).append("\n") // 각 라인 뒤에 개행 추가
             }
 
@@ -111,6 +102,57 @@ class YTDlpService(
         }
 
         return Pair(exitCode, outputStringBuilder.toString())
+    }
+
+
+    private fun buildCommand(
+        ytDlpPath: String,
+        url: String,
+        fileName: String,
+        saveToDirectory: String,
+        additionalArguments: String
+    ): List<String> {
+
+        val command = mutableListOf<String>()
+
+        // 1. yt-dlp 실행 경로 (설정에서 가져오거나 기본값 사용)
+        command.add(ytDlpPath)
+
+        // 2. 출력 경로 설정 (파일명이 있을 경우만 적용)
+        if (fileName.isNotBlank()) {
+            val outputPath = "$saveToDirectory${File.separator}$fileName"
+            command.add("-o")
+            command.add(outputPath)
+        } else {
+            // 파일명이 없으면 디렉토리만 지정
+            command.add("-o")
+            command.add("$saveToDirectory${File.separator}%(title)s.%(ext)s")
+        }
+
+        // 3. 추가 인자 처리
+        if (additionalArguments.isNotBlank()) {
+            // 인자를 공백으로 분할하고 유효성 검사
+            val args = additionalArguments.split("\\s+".toRegex()).filter { it.isNotBlank() }
+
+            // 위험한 인자 필터링
+            val safeArgs = args.filterNot { arg ->
+                // 시스템 명령 실행을 방지하기 위한 필터
+                arg.contains(";") || arg.contains("&") || arg.contains("|") || arg.contains("`") ||
+                        arg.contains("\$(") || arg.startsWith("--exec") || arg.startsWith("--postprocessor-args")
+            }
+
+            command.addAll(safeArgs)
+        }
+
+        // 4. 진행률 표시 옵션 추가
+        command.add("--progress")
+        command.add("--newline")
+        command.add("--console-title")
+
+        // 5. 최종 URL 추가
+        command.add(url)
+
+        return command
     }
 
 }

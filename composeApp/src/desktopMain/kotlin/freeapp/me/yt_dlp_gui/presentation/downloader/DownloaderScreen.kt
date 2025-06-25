@@ -4,7 +4,6 @@ import androidx.compose.foundation.LocalScrollbarStyle
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,14 +22,10 @@ import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,17 +35,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import freeapp.me.yt_dlp_gui.presentation.downloader.component.DownloadLogViewer
 import freeapp.me.yt_dlp_gui.presentation.downloader.component.FileSelectableGroup
-import freeapp.me.yt_dlp_gui.presentation.downloader.component.InputSection
-import freeapp.me.yt_dlp_gui.presentation.downloader.component.PathInputSection
+import freeapp.me.yt_dlp_gui.presentation.downloader.component.InputSectionContainer
 import org.koin.compose.viewmodel.koinViewModel
 
 
 @Composable
 fun DownloaderScreen(
+    viewModel: DownloaderViewModel = koinViewModel<DownloaderViewModel>()
 ) {
 
-
+    val uiState by viewModel.uiState.collectAsState()
 
 
     // 라디오 버튼 그룹 상태 관리
@@ -83,7 +79,7 @@ fun DownloaderScreen(
         ) {
 
 
-            InputSection()
+            InputSectionContainer()
 
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -148,7 +144,7 @@ fun DownloaderScreen(
             Row(
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Button(onClick = { /* TODO: Start Download */ }) { Text("Download") }
+                Button(onClick = viewModel::startDownload) { Text("Download") }
                 Spacer(Modifier.width(16.dp))
                 Button(onClick = { /* TODO: Abort Download */ }) { Text("Abort") }
                 Spacer(Modifier.width(16.dp))
@@ -158,19 +154,13 @@ fun DownloaderScreen(
             }
 
 
+            DownloadLogViewer(
+                log = uiState.resultLog,
+                modifier = Modifier.fillMaxWidth(),
+                onCopyLog = {},
+                onClearLog = viewModel::clearLog
+            )
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(400.dp)
-                    //.weight(1f) // 남은 공간 모두 차지
-                    .border(1.dp, Color.LightGray) // 테두리
-                    .background(Color.White)
-                    .padding(8.dp)
-            ) {
-                // 여기에 다운로드 상태 메시지 등이 표시될 것입니다.
-                Text("Download log will appear here...")
-            }
 
 
         }

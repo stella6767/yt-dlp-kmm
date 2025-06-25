@@ -1,5 +1,6 @@
 package freeapp.me.yt_dlp_gui.util
 
+import androidx.compose.ui.awt.ComposeWindow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -32,4 +33,38 @@ object FileChooser {
             }
         }
     }
+
+
+    fun chooseFile(
+        window: ComposeWindow? = null,
+        title: String,
+        allowedExtensions: List<String>,
+        allowMultiSelection: Boolean = false
+    ): String {
+
+        val fileDialog = FileDialog(window, title, FileDialog.LOAD).apply {
+            isMultipleMode = allowMultiSelection
+            // windows
+            file =
+                allowedExtensions.joinToString(";") { "*$it" } // e.g. '*.jpg'
+            // linux
+            setFilenameFilter { _, name ->
+                allowedExtensions.any {
+                    name.endsWith(it)
+                }
+            }
+            isVisible = true
+        }
+
+
+        val file = fileDialog?.file
+        val directory = fileDialog?.directory
+
+        return if (file != null && directory != null ) {
+            directory + file
+        } else ""
+
+    }
+
+
 }

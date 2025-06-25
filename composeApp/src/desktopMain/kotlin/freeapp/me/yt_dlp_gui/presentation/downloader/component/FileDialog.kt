@@ -25,30 +25,3 @@ fun FileDialog(
     dispose = FileDialog::dispose
 )
 
-
-fun openFileDialog(
-    window: ComposeWindow? = null,
-    title: String,
-    allowedExtensions: List<String>,
-    allowMultiSelection: Boolean = true
-): String {
-
-    val fileDialog = FileDialog(window, title, FileDialog.LOAD).apply {
-        isMultipleMode = allowMultiSelection
-        // windows
-        file =
-            allowedExtensions.joinToString(";") { "*$it" } // e.g. '*.jpg'
-        // linux
-        setFilenameFilter { _, name ->
-            allowedExtensions.any {
-                name.endsWith(it)
-            }
-        }
-        isVisible = true
-    }
-
-    val path =
-        fileDialog.directory?.let { File(it) }?.absolutePath ?: ""
-
-    return path
-}

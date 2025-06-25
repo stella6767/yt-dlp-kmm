@@ -1,9 +1,5 @@
 package freeapp.me.yt_dlp_gui.presentation.downloader
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import freeapp.me.yt_dlp_gui.data.service.YTDlpService
@@ -12,7 +8,6 @@ import freeapp.me.yt_dlp_gui.util.FileChooser
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -62,19 +57,27 @@ class DownloaderViewModel(
         }
     }
 
-//    // --- 다운로드 관련 비즈니스 로직 함수들 ---
-//    fun startDownload() {
-//        // 현재 UI 상태의 값을 사용하여 다운로드 시작
-//        _uiState.value.let { state ->
-//            ytDlpService.downloadVideo(
-//                url = state.url,
-//                fileName = state.fileName,
-//                saveToDirectory = state.saveToDirectory,
-//                additionalArguments = state.additionalArguments
-//            )
-//        }
-//    }
-//
+    // --- 다운로드 관련 비즈니스 로직 함수들 ---
+    fun startDownload() {
+        viewModelScope.launch {
+            val (code, log) = ytDlpService.downloadVideo(
+                scope = this,
+                url = _uiState.value.url,
+                fileName = _uiState.value.fileName,
+                saveToDirectory = _uiState.value.saveToDirectory,
+                additionalArguments = _uiState.value.additionalArguments,
+                ytDlpPath = _uiState.value.ytdlpPath,
+                onStateUpdate = {}
+            )
+
+            println(log)
+
+            _uiState.update { state ->
+                state.copy(resultLog = log)
+            }
+        }
+    }
+
 //    fun abortDownload() {
 //        ytDlpService.abortDownload()
 //    }
@@ -87,16 +90,25 @@ class DownloaderViewModel(
     }
 
     fun onYTDlpPathBrowseClick() {
-//        viewModelScope.launch {
-//            val selectedFile = FileChooser.chooseFile( // Desktop 전용 함수 호출 (expect/actual)
-//                allowedExtensions = listOf(""), // 실행 파일은 확장자 필터링 안 함
-//                allowMultiSelection = false
-//            )
-//            selectedFile?.let { updateYTDlpPath(it) }
-//        }
+        viewModelScope.launch {
+            val selectedFile = FileChooser.chooseFile(
+                title = "Select File",
+                allowedExtensions = listOf(""), // 실행 파일은 확장자 필터링 안 함
+            )
+            selectedFile?.let { updateYTDlpPath(it) }
+        }
     }
 
+    fun clearLog() {
+        _uiState.update {
+            it.copy(resultLog = "")
+        }
+    }
 
+    fun copyLogToClipboard() {
+        // 실제로는 클립보드에 복사하는 로직 구현
+        println("로그 복사: ${uiState.value.resultLog}")
+    }
 
 
 }
