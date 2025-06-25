@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import freeapp.me.yt_dlp_gui.data.service.YTDlpService
 import freeapp.me.yt_dlp_gui.domain.model.DownloadType
 import freeapp.me.yt_dlp_gui.util.FileChooser
+import freeapp.me.yt_dlp_gui.util.formatTimeString
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -81,6 +82,7 @@ class DownloaderViewModel(
 
 
     fun updateStartTime(newStartTime: String) {
+
         _uiState.update { state ->
             state.copy(startTime = newStartTime)
         }
@@ -88,6 +90,7 @@ class DownloaderViewModel(
 
 
     fun updateEndTime(newEndTime: String) {
+
         _uiState.update { state ->
             state.copy(endTime = newEndTime)
         }
@@ -170,3 +173,4 @@ class DownloaderViewModel(
 
 
 }
+

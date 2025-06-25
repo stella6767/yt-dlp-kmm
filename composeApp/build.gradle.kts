@@ -51,8 +51,10 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "freeapp.me.yt_dlp_gui"
+            packageName = "yt_dlp_kmm_gui"
             packageVersion = "1.0.0"
+            description = "yt-dlp KMM Desktop Application"
+            copyright = "© 2025 stella6767"
         }
     }
 }

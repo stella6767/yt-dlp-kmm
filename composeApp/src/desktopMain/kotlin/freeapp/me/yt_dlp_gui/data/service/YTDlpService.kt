@@ -163,15 +163,15 @@ class YTDlpService(
                 command.add("--download-sections")
 
                 val section = buildString {
-                    if (!startTime.isNullOrBlank()) append("from $startTime")
+                    if (!startTime.isNullOrBlank()) append("$startTime")
                     if (!endTime.isNullOrBlank()) {
-                        if (isNotEmpty()) append(" ")
-                        append("to $endTime")
+                        if (isNotEmpty()) append("-$endTime")
                     }
                 }
 
                 if (section.isNotBlank()) {
                     command.add("*$section")
+
                 }
 
 

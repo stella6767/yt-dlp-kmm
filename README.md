@@ -1,14 +1,79 @@
-This is a Kotlin Multiplatform project targeting Desktop.
+# yt-dlp KMM Desktop GUI
 
-* `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-    - `commonMain` is for code that’s common for all targets.
-    - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-      For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-      `iosMain` would be the right folder for such calls.
+![Kotlin Multiplatform](https://img.shields.io/badge/Kotlin%20Multiplatform-blue?style=for-the-badge&logo=kotlin)
+![Koin](https://img.shields.io/badge/Koin-green?style=for-the-badge&logo=kotlin)
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+This project is a desktop GUI application for yt-dlp, built on KMM (Kotlin Multiplatform Mobile). It leverages Compose Multiplatform to provide a user-friendly interface that runs on desktop environments.
 
+
+### 📋 Prerequisites
+
+* **FFmpeg** [FFmpeg](https://github.com/FFmpeg/FFmpeg)
+* **Yt-dlp** [yt-dlp](https://github.com/yt-dlp/yt-dlp)
+
+### ⬇️ Download & Install
+
+1.  Go to the **[Releases page](https://github.com/stella6767/yt-dlp-kmm/releases)** of this repository. 
+2.  Find the latest release (e.g., `v1.0.0`).
+3.  Download the appropriate installer file for your OS:
+    * **macOS:** `.dmg` file
+    * **Windows:** `.msi` file
+    * **Linux:** `.deb` file
+4.  Run the installer file and follow the on-screen instructions.
+
+
+
+### ⚙️ Build from Source
+
+If you prefer to build the application yourself, follow these steps:
+
+1.  **Clone the Repository:**
+    ```bash
+    git clone [https://github.com/stella6767/yt-dlp-kmm]
+    cd yt-dlp-kmm-gui
+    ```
+
+2.  **Run the Desktop Application (Development Mode):**
+    ```bash
+    ./gradlew run
+    ```
+    Alternatively, open the `MainKt` file in IntelliJ IDEA and click the run button.
+
+3.  **Generate Native Distribution Files (Windows, macOS, Linux):**
+    Generate installer files for various operating systems. The generated files can typically be found in the `build/compose/binaries` or `build/compose/distributions` directory.
+
+    * **macOS (`.dmg`):**
+        ```bash
+        ./gradlew packageDmg
+        ```
+    * **Windows (`.msi`):**
+        ```bash
+        ./gradlew packageMsi
+        ```
+    * **Linux (`.deb`):**
+        ```bash
+        ./gradlew packageDeb
+        ```
+
+---
+
+## ✨ Key Technologies
+
+This project is developed using the following technology stack:
+
+* **Kotlin Multiplatform:** Enables sharing a single codebase across multiple platforms.
+* **Koin:** A dependency injection (DI) framework that helps in writing modular and testable code.
+* **Kotlinx Coroutines:** A library for asynchronous programming.
+* **Jetpack Lifecycle:** Manages the lifecycle of components.
+
+---
+
+## ✍️ Contributing
+
+Contributions are welcome! You can participate by submitting bug reports, feature suggestions, or pull requests.
+
+
+## 📜 참고
 
 https://slack-chats.kotlinlang.org/t/22708259/am-i-right-to-find-that-the-default-sizes-of-compose-3-widge
 https://www.jetbrains.com/help/kotlin-multiplatform-dev/multiplatform-samples.html

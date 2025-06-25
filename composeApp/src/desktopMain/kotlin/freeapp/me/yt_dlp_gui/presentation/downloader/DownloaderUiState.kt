@@ -2,6 +2,7 @@ package freeapp.me.yt_dlp_gui.presentation.downloader
 
 import freeapp.me.yt_dlp_gui.domain.model.DownloadType
 import freeapp.me.yt_dlp_gui.domain.model.DownloaderState
+import freeapp.me.yt_dlp_gui.util.formatTimeString
 
 data class DownloaderUiState(
     val url: String = "",
@@ -26,8 +27,8 @@ data class DownloaderUiState(
             ytDlpPath = ytDlpPath,
             downloadType = downloadType,
             format = format,
-            startTime,
-            endTime
+            formatTimeString(startTime) ,
+            formatTimeString(endTime)
         )
     }
 
