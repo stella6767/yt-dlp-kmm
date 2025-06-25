@@ -51,9 +51,9 @@ fun InputSectionContainer() {
         )
         // yt-dlp 및 ffmpeg 경로 입력 섹션
         FolderInputSection(
-            value = uiState.ytdlpPath,
+            value = uiState.ytDlpPath,
             title = "yt-dlp path",
-            placeholder = uiState.ytdlpPath,
+            placeholder = uiState.ytDlpPath,
             100.dp,
             viewModel::onYTDlpPathBrowseClick,
             Icons.Default.FileOpen,

@@ -1,13 +1,28 @@
 package freeapp.me.yt_dlp_gui.presentation.downloader
 
-import freeapp.me.yt_dlp_gui.domain.model.DownloadState
+import freeapp.me.yt_dlp_gui.domain.model.DownloaderState
 
 data class DownloaderUiState(
     val url: String = "",
     val fileName: String = "",
     val saveToDirectory: String = "",
     val additionalArguments: String = "",
-    val ytdlpPath: String = "/usr/local/bin/yt-dlp", // 기본 경로
-    val resultLog:String = "",
-    val downloadState: DownloadState = DownloadState.Idle
-)
+    val ytDlpPath: String = "/opt/homebrew/Cellar/yt-dlp/2025.4.30/libexec/bin/yt-dlp", // 기본 경로
+    val resultLog: String = "",
+    val isDownloading: Boolean = false,
+    val format: String = "",
+
+
+) {
+
+    fun toDomain(): DownloaderState {
+        return DownloaderState(
+            url = url,
+            fileName = fileName,
+            saveToDirectory = saveToDirectory,
+            additionalArguments = additionalArguments,
+            ytDlpPath = ytDlpPath,
+        )
+    }
+
+}

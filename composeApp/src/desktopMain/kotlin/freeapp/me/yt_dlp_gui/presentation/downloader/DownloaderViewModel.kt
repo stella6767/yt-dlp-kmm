@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.awt.Toolkit
+import java.awt.datatransfer.StringSelection
 
 class DownloaderViewModel(
     private val ytDlpService: YTDlpService
@@ -53,34 +55,50 @@ class DownloaderViewModel(
 
     fun updateYTDlpPath(newPath: String) {
         _uiState.update { state ->
-            state.copy(ytdlpPath = newPath)
+            state.copy(ytDlpPath = newPath)
         }
     }
 
     // --- 다운로드 관련 비즈니스 로직 함수들 ---
     fun startDownload() {
         viewModelScope.launch {
+
+            _uiState.update { state ->
+                state.copy(isDownloading = true)
+            }
+
             val (code, log) = ytDlpService.downloadVideo(
                 scope = this,
-                url = _uiState.value.url,
-                fileName = _uiState.value.fileName,
-                saveToDirectory = _uiState.value.saveToDirectory,
-                additionalArguments = _uiState.value.additionalArguments,
-                ytDlpPath = _uiState.value.ytdlpPath,
-                onStateUpdate = {}
+                downloadState = _uiState.value.toDomain(),
+                onStateUpdate = { state ->
+                    val logLine = state + "\n"
+                    _uiState.update { currentState ->
+                        currentState.copy(resultLog = currentState.resultLog + logLine)
+                    }
+                }
             )
 
             println(log)
 
             _uiState.update { state ->
-                state.copy(resultLog = log)
+                state.copy(isDownloading = false)
             }
+
         }
     }
 
-//    fun abortDownload() {
-//        ytDlpService.abortDownload()
-//    }
+    fun abortDownload() {
+        viewModelScope.launch {
+            ytDlpService.abortDownload(
+                onStateUpdate = { state ->
+                    val logLine = state + "\n"
+                    _uiState.update { currentState ->
+                        currentState.copy(resultLog = currentState.resultLog + logLine)
+                    }
+                }
+            )
+        }
+    }
 
     fun onSaveToDirectoryBrowseClick() {
         viewModelScope.launch {
@@ -106,8 +124,10 @@ class DownloaderViewModel(
     }
 
     fun copyLogToClipboard() {
-        // 실제로는 클립보드에 복사하는 로직 구현
-        println("로그 복사: ${uiState.value.resultLog}")
+        val clipboard =
+            Toolkit.getDefaultToolkit().systemClipboard
+        val stringSelection = StringSelection(uiState.value.resultLog)
+        clipboard.setContents(stringSelection, null)
     }
 
 

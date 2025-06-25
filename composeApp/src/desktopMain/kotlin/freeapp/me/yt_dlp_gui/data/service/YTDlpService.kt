@@ -1,6 +1,6 @@
 package freeapp.me.yt_dlp_gui.data.service
 
-import freeapp.me.yt_dlp_gui.domain.model.DownloadState
+import freeapp.me.yt_dlp_gui.domain.model.DownloaderState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -23,26 +23,29 @@ class YTDlpService(
 
     suspend fun downloadVideo(
         scope: CoroutineScope,
-        url: String,
-        fileName: String,
-        saveToDirectory: String,
-        additionalArguments: String,
-        ytDlpPath: String,
-        onStateUpdate: (DownloadState) -> Unit
+        downloadState: DownloaderState,
+        onStateUpdate: (String) -> Unit
     ): Pair<Int, String> {
+
+
+        val (url, fileName, saveToDirectory, additionalArguments, ytDlpPath) =
+            downloadState
 
 
         val await = scope.async(Dispatchers.IO) {
 
             processMutex.withLock {
-                onStateUpdate(DownloadState.Downloading("초기화 중...", "")) // 초기 상태 전달
-                //currentProcessJob = coroutineContext[Job] // 현재 코루틴 Job을 추적하여 abort에서 취소 가능하게 함
+
+                onStateUpdate("초기화 중...")
 
                 val command =
                     buildCommand(ytDlpPath, url, fileName, saveToDirectory, additionalArguments)
 
                 println("실행할 명령: ${command.joinToString(" ")}")
-                executeCommandSync(command)
+
+                onStateUpdate(command.joinToString(" "))
+
+                executeCommandSync(command, onStateUpdate)
             }
         }.await()
 
@@ -50,26 +53,31 @@ class YTDlpService(
     }
 
 
-//    // 다운로드 중단 함수
-//    fun abortDownload() {
-//        if (currentDownloadJob?.isActive == true) {
-//            currentDownloadJob?.cancel() // 코루틴 취소
-//            currentProcess?.destroyForcibly() // 실제 프로세스도 강제 종료
-//            // 상태 업데이트는 downloadVideo의 catch 블록에서 isActive 확인 후 Aborted로 전달됨
-//            println("다운로드 중단 요청됨.")
-//        } else {
-//            println("진행 중인 다운로드가 없습니다.")
-//        }
-//    }
+    // 다운로드 중단 함수
+    fun abortDownload(
+        onStateUpdate: (String) -> Unit,
+    ) {
+        if (currentProcess != null) {
+            currentProcess?.destroyForcibly()
+
+            onStateUpdate("abort download")
+            println("다운로드 중단 요청됨.")
+        } else {
+            println("진행 중인 다운로드가 없습니다.")
+            onStateUpdate("there is no download process")
+        }
+    }
 
 
-    fun executeCommandSync(command: List<String>): Pair<Int, String> {
+    fun executeCommandSync(command: List<String>, onStateUpdate: (String) -> Unit): Pair<Int, String> {
 
 
         println("실행할 명령 (블로킹): ${command.joinToString(" ")}")
 
-        val processBuilder = ProcessBuilder(command)
-        processBuilder.redirectErrorStream(true) // 에러 스트림을 표준 출력으로 리디렉션하여 함께 읽기
+        val processBuilder =
+            ProcessBuilder(command).redirectErrorStream(true) // 에러 스트림을 표준 출력으로 리디렉션하여 함께 읽기
+
+
 
         var process: Process? = null
         var reader: BufferedReader? = null
@@ -78,12 +86,14 @@ class YTDlpService(
 
         try {
             process = processBuilder.start()
+            currentProcess = process
+
             reader = BufferedReader(InputStreamReader(process.inputStream))
 
             var line: String?
             while (reader.readLine().also { line = it } != null) {
 
-
+                onStateUpdate(line ?: "")
 
                 outputStringBuilder.append(line).append("\n") // 각 라인 뒤에 개행 추가
             }
@@ -99,6 +109,7 @@ class YTDlpService(
         } finally {
             reader?.close()
             process?.destroyForcibly() // 확실한 종료 (선택 사항)
+            currentProcess = null
         }
 
         return Pair(exitCode, outputStringBuilder.toString())

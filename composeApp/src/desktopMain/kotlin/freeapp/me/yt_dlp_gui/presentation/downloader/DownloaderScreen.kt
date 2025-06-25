@@ -2,8 +2,6 @@ package freeapp.me.yt_dlp_gui.presentation.downloader
 
 import androidx.compose.foundation.LocalScrollbarStyle
 import androidx.compose.foundation.VerticalScrollbar
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -33,8 +30,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import freeapp.me.yt_dlp_gui.domain.model.DownloadType
 import freeapp.me.yt_dlp_gui.presentation.downloader.component.DownloadLogViewer
 import freeapp.me.yt_dlp_gui.presentation.downloader.component.FileSelectableGroup
 import freeapp.me.yt_dlp_gui.presentation.downloader.component.InputSectionContainer
@@ -50,8 +47,9 @@ fun DownloaderScreen(
 
 
     // 라디오 버튼 그룹 상태 관리
-    val videoOptions = listOf("Video (full)", "Video (partial)")
-    var selectedVideoOption by remember { mutableStateOf(videoOptions[0]) }
+
+    val downloadTypes = DownloadType.entries
+    var downloadType by remember { mutableStateOf(downloadTypes[0]) }
 
     val audioFormats = listOf("Default", "MP3")
     var selectedAudioFormat by remember { mutableStateOf(audioFormats[0]) }
@@ -65,7 +63,7 @@ fun DownloaderScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(start = 10.dp, end =10.dp),
+            .padding(start = 10.dp, end = 10.dp),
     ) {
 
 
@@ -84,9 +82,12 @@ fun DownloaderScreen(
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier.fillMaxWidth()
-            ){
+            ) {
                 // Audio/Video Radio Buttons
-                FileSelectableGroup(selectedVideoOption)
+                FileSelectableGroup(
+                    downloadType,
+                    { downloadType = it }
+                )
             }
 
             // Audio format and Video format Radio Buttons
@@ -94,7 +95,7 @@ fun DownloaderScreen(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Audio format:", )
+                Text("Audio format:")
                 Row(modifier = Modifier.selectableGroup()) {
                     audioFormats.forEach { text ->
                         Row(
@@ -138,29 +139,34 @@ fun DownloaderScreen(
                 }
             }
 
-
-
             // Action Buttons
             Row(
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Button(onClick = viewModel::startDownload) { Text("Download") }
+                Button(
+                    onClick = viewModel::startDownload,
+                    enabled = !uiState.isDownloading,
+                ) {
+                    Text("Download")
+                }
                 Spacer(Modifier.width(16.dp))
-                Button(onClick = { /* TODO: Abort Download */ }) { Text("Abort") }
+                Button(
+                    onClick = viewModel::abortDownload,
+                    enabled = uiState.isDownloading,
+                ) {
+                    Text("Abort")
+                }
                 Spacer(Modifier.width(16.dp))
                 Button(onClick = { /* TODO: Update yt-dlp */ }) { Text("Update yt-dlp") }
-                Spacer(Modifier.width(16.dp))
-                Button(onClick = { /* TODO: Show About */ }) { Text("About") }
             }
 
 
             DownloadLogViewer(
                 log = uiState.resultLog,
                 modifier = Modifier.fillMaxWidth(),
-                onCopyLog = {},
+                onCopyLog = viewModel::copyLogToClipboard,
                 onClearLog = viewModel::clearLog
             )
-
 
 
         }
@@ -179,7 +185,6 @@ fun DownloaderScreen(
             )
         )
     }
-
 
 
 }
