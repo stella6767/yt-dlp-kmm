@@ -18,6 +18,11 @@ kotlin {
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.0-beta03")
 
 
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+            implementation(libs.koin.compose.viewmodel.navigation)
+
             implementation(compose.materialIconsExtended)
             implementation(compose.runtime)
             implementation(compose.foundation)

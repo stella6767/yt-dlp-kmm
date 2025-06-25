@@ -31,6 +31,7 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,15 +43,15 @@ import androidx.compose.ui.unit.dp
 import freeapp.me.yt_dlp_gui.presentation.downloader.component.FileSelectableGroup
 import freeapp.me.yt_dlp_gui.presentation.downloader.component.InputSection
 import freeapp.me.yt_dlp_gui.presentation.downloader.component.PathInputSection
+import org.koin.compose.viewmodel.koinViewModel
 
 
 @Composable
-fun DownloaderScreen() {
-    // 폼 입력 필드의 상태 관리
-    var urlText by remember { mutableStateOf("") }
-    var fileNameText by remember { mutableStateOf("") }
-    var saveToPath by remember { mutableStateOf("C:\\Users\\espyy\\Downloads\\yt-dlp") } // 기본값
-    var additionalArgs by remember { mutableStateOf("") }
+fun DownloaderScreen(
+) {
+
+
+
 
     // 라디오 버튼 그룹 상태 관리
     val videoOptions = listOf("Video (full)", "Video (partial)")
