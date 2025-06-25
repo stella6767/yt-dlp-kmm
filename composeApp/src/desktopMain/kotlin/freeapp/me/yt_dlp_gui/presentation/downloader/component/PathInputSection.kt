@@ -41,6 +41,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import freeapp.me.yt_dlp_gui.util.FileChooser.chooseDirectory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun PathInputSection(
@@ -51,6 +55,19 @@ fun PathInputSection(
 ) {
 
     var path by remember { mutableStateOf("") } // 경로 상태 관리
+
+    val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
+
+    var isFileChooserOpen by remember { mutableStateOf(false) }
+
+    if (isFileChooserOpen) {
+        FileDialog(
+            onCloseRequest = {
+                isFileChooserOpen = false
+                println("Result $it")
+            }
+        )
+    }
 
     Row(
         modifier = Modifier.fillMaxWidth()
@@ -91,8 +108,18 @@ fun PathInputSection(
         if (imageVector != null) {
             Button(
                 onClick = {
-                    // 실제 파일 탐색기 열기 로직은 여기에 구현되지 않습니다.
-                    println("$title 찾아보기 버튼 클릭됨!")
+                    coroutineScope.launch { // 코루틴 스코프 내에서 suspend 함수 호출
+                        val selectedPath = chooseDirectory() // <-- 폴더 선택 함수 호출!
+                        if (selectedPath != null) {
+                            path = selectedPath // 선택된 경로를 TextField의 상태에 반영
+                            println("선택된 폴더: $path")
+                        } else {
+                            println("폴더 선택 취소됨.")
+                        }
+                    }
+
+                    //isFileChooserOpen = true
+                    //openFileDialog(title = "directory choose", allowedExtensions = listOf())
                 },
                 modifier = Modifier.height(56.dp), // 텍스트 필드와 높이 맞추기
                 shape = RoundedCornerShape(8.dp), // 둥근 모서리
