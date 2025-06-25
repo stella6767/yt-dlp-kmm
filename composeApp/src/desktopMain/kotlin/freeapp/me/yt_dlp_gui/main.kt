@@ -7,10 +7,11 @@ import androidx.compose.ui.window.rememberWindowState
 import freeapp.me.yt_dlp_gui.presentation.App
 
 fun main() = application {
+
     Window(
         onCloseRequest = ::exitApplication,
         title = "yt_dlp_gui",
-        state = rememberWindowState(width = 800.dp, height = 700.dp)
+        state = rememberWindowState(width = 1200.dp, height = 700.dp)
     ) {
         App()
     }

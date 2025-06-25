@@ -13,10 +13,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.MenuOpen
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Keyboard
 import androidx.compose.material.icons.filled.MenuOpen
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -28,32 +30,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
+
 @Composable
-fun Sidebar(modifier: Modifier = Modifier, function: () -> Unit) {
+fun Sidebar(modifier: Modifier = Modifier) {
 
     Column(modifier = modifier.padding(vertical = 16.dp)) {
 
-//        Row(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(horizontal = 8.dp, vertical = 4.dp),
-//            horizontalArrangement = Arrangement.End // 우측에 정렬
-//        ) {
-//            IconButton(onClick = { function }) { // 아이콘 클릭 시 사이드바 닫기
-//                Icon(Icons.Filled.MenuOpen, contentDescription = "Close Sidebar") // 닫기 아이콘
-//            }
-//        }
         Spacer(Modifier.height(8.dp))
 
-        SidebarItem(icon = Icons.Filled.Home, text = "Home", isSelected = true) // Home is selected
-        SidebarItem(icon = Icons.Filled.Keyboard, text = "Keyring")
-        SidebarItem(icon = Icons.Filled.History, text = "History")
+        SidebarItem(icon = Icons.Filled.Download, text = "Downloader", isSelected = true) // Home is selected
+        SidebarItem(icon = Icons.Filled.Settings, text = "Settings")
     }
 
 }
 
 @Composable
-fun SidebarItem(icon: ImageVector, text: String, isSelected: Boolean = false, count: Int? = null) {
+private fun SidebarItem(icon: ImageVector, text: String, isSelected: Boolean = false) {
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -62,12 +55,8 @@ fun SidebarItem(icon: ImageVector, text: String, isSelected: Boolean = false, co
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(icon, contentDescription = text, modifier = Modifier.size(24.dp))
+        Icon(icon, contentDescription = text, modifier = Modifier.size(24.dp), tint = if (isSelected) Color.Red else Color.Gray)
         Spacer(Modifier.width(16.dp))
-        Text(text, style = MaterialTheme.typography.bodyMedium)
-        if (count != null) {
-            Spacer(Modifier.weight(1f))
-            Text(count.toString(), style = MaterialTheme.typography.displayMedium, color = Color.Gray)
-        }
+        Text(text, style = MaterialTheme.typography.bodyMedium, color = Color.Black)
     }
 }

@@ -18,8 +18,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.darkColors
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -36,13 +36,17 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import freeapp.me.yt_dlp_gui.presentation.home.component.DownloadFolderSection
-import freeapp.me.yt_dlp_gui.presentation.home.component.PathInputSection
-import freeapp.me.yt_dlp_gui.presentation.home.component.UrlInputSection
-import freeapp.me.yt_dlp_gui.presentation.home.component.YtdlpOptionsSection
+import freeapp.me.yt_dlp_gui.presentation.downloader.DownloaderScreen
+import freeapp.me.yt_dlp_gui.presentation.downloader.component.DownloadFolderSection
+import freeapp.me.yt_dlp_gui.presentation.downloader.component.PathInputSection
+import freeapp.me.yt_dlp_gui.presentation.downloader.component.UrlInputSection
+import freeapp.me.yt_dlp_gui.presentation.downloader.component.YtdlpOptionsSection
+import freeapp.me.yt_dlp_gui.presentation.layout.MTopAppBar
 import freeapp.me.yt_dlp_gui.presentation.layout.Sidebar
+import freeapp.me.yt_dlp_gui.util.DarkColorPalette
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,29 +55,15 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun App() {
 
     var isSidebarExpanded by remember { mutableStateOf(true) } // State for sidebar expansion
+    //val windowSize = LocalWindowInfo.current.containerSize
 
     MaterialTheme(
-        colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+        colorScheme = darkColorScheme(),
+        typography = MaterialTheme.typography,
+        shapes = MaterialTheme.shapes,
     ) {
         Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = "yt-dlp GUI", // TopAppBar 타이틀
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center // 타이틀 가운데 정렬
-                        )
-                    },
-                    navigationIcon = {
-                        // TopAppBar의 navigationIcon 슬롯에 사이드바 토글 버튼 배치
-                        IconButton(onClick = { isSidebarExpanded = !isSidebarExpanded }) {
-                            Icon(Icons.Filled.Menu, contentDescription = "Toggle Sidebar")
-                        }
-                    },
-
-                )
-            }
+            topBar = { MTopAppBar( { isSidebarExpanded = !isSidebarExpanded }) }
         ) { paddingValues -> // Scaffold가 제공하는 패딩 값을 받습니다.
             Row(
                 modifier = Modifier
@@ -90,29 +80,27 @@ fun App() {
                         modifier = Modifier
                             .width(200.dp) // 사이드바 너비
                             .fillMaxHeight()
-                            .background(Color(0xFFF0F0F0)) // Light grey background
-                    ) {
-                        // 사이드바 아이템 클릭 시 사이드바를 자동으로 닫으려면 아래 주석 해제
-                        // isSidebarExpanded = false
-                    }
+                            .background(Color.Gray) // Light grey background
+                    )
                 }
 
                 // 메인 콘텐츠 영역
                 Column(
                     modifier = Modifier
                         .weight(1f) // 남은 공간 모두 차지
-                        .fillMaxHeight()
-                        .background(Color.White),
+                        .fillMaxHeight(),
+
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    //DownloadMediaContent()
+                    DownloaderScreen()
                 }
             }
         }
     }
 
 }
+
 
 @Composable
 fun HomeScreen(paddingValues: PaddingValues) {
@@ -130,12 +118,14 @@ fun HomeScreen(paddingValues: PaddingValues) {
         // yt-dlp 및 ffmpeg 경로 입력 섹션
         PathInputSection(
             title = "yt-dlp 경로",
-            placeholder = "/usr/local/bin/yt-dlp"
+            placeholder = "/usr/local/bin/yt-dlp",
+            100.dp
         )
         Spacer(Modifier.height(16.dp))
         PathInputSection(
             title = "FFmpeg 경로 (선택 사항)",
-            placeholder = "/usr/local/bin/ffmpeg"
+            placeholder = "/usr/local/bin/ffmpeg",
+            100.dp
         )
 
         Spacer(Modifier.height(24.dp))

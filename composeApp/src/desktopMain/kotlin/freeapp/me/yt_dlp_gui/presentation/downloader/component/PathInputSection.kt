@@ -1,26 +1,29 @@
-package freeapp.me.yt_dlp_gui.presentation.home.component
+package freeapp.me.yt_dlp_gui.presentation.downloader.component
 
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ContentAlpha
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,35 +32,63 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
-fun PathInputSection(title: String, placeholder: String) {
+fun PathInputSection(
+    title: String,
+    placeholder: String,
+    width: Dp,
+    imageVector: ImageVector? = null,
+) {
+
     var path by remember { mutableStateOf("") } // 경로 상태 관리
 
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Text(text = title, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(bottom = 4.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // 경로 입력 필드
-            OutlinedTextField(
-                value = path,
-                onValueChange = { path = it }, // 값 변경 시 상태 업데이트
-                label = { Text(placeholder) }, // 플레이스홀더 텍스트 (실제 라벨)
-                modifier = Modifier.weight(1f), // 남은 공간 모두 차지
-                singleLine = true, // 단일 라인 입력
-                shape = RoundedCornerShape(8.dp), // 둥근 모서리
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.primary,
-                    unfocusedContainerColor = Color.LightGray,
-                )
-            )
+    Row(
+        modifier = Modifier.fillMaxWidth()
+            .height(30.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp) // 컴포넌트 간 기본 간격 추가
+    ) {
 
-            // 찾아보기 버튼
-            Spacer(Modifier.width(8.dp))
+        Text(
+            "$title:",
+            maxLines = 1,
+            modifier = Modifier.width(width),
+            overflow = TextOverflow.Ellipsis,
+            color = MaterialTheme.colorScheme.primary
+        )
+
+        BasicTextField(
+            value = path,
+            onValueChange = { path = it },
+            singleLine = true, // 단일 라인 입력 유지
+            // 텍스트 스타일: 색상과 글자 크기 지정
+            textStyle = TextStyle(
+                color = Color.White, // <-- 입력 텍스트 색상
+                fontSize = 14.sp // <-- 텍스트 크기를 40dp 높이에 맞게 조절
+            ),
+
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary), // 커서 색상
+            modifier = Modifier
+                .weight(1f) // Box의 모든 공간을 BasicTextField가 채우도록
+                .border(1.dp, MaterialTheme.colorScheme.onBackground)
+                // !!! BasicTextField 내부 패딩 조절 !!!
+                .padding(horizontal = 8.dp, vertical = 5.dp) // <-- 텍스트가 잘리지 않도록 수직 패딩 조절
+        )
+
+
+
+        Spacer(Modifier.width(8.dp))
+        if (imageVector != null) {
             Button(
                 onClick = {
                     // 실제 파일 탐색기 열기 로직은 여기에 구현되지 않습니다.
@@ -67,9 +98,11 @@ fun PathInputSection(title: String, placeholder: String) {
                 shape = RoundedCornerShape(8.dp), // 둥근 모서리
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE0E0E0)) // 버튼 색상 (회색)
             ) {
-                Icon(imageVector = Icons.Default.FolderOpen, contentDescription = "Browse", tint = Color.Black)
+                Icon(imageVector = imageVector, contentDescription = "Browse", tint = Color.Black)
             }
         }
+
+
     }
 }
 
@@ -144,7 +177,11 @@ fun YtdlpOptionsSection() {
     var options by remember { mutableStateOf("") } // 옵션 상태 관리
 
     Column(modifier = Modifier.fillMaxWidth()) {
-        Text(text = "yt-dlp 옵션", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(bottom = 4.dp))
+        Text(
+            text = "yt-dlp 옵션",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(bottom = 4.dp)
+        )
         OutlinedTextField(
             value = options,
             onValueChange = { options = it }, // 값 변경 시 상태 업데이트
