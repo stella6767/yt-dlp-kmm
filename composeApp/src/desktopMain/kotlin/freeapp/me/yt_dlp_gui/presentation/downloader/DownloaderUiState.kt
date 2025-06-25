@@ -1,5 +1,6 @@
 package freeapp.me.yt_dlp_gui.presentation.downloader
 
+import freeapp.me.yt_dlp_gui.domain.model.DownloadType
 import freeapp.me.yt_dlp_gui.domain.model.DownloaderState
 
 data class DownloaderUiState(
@@ -11,8 +12,9 @@ data class DownloaderUiState(
     val resultLog: String = "",
     val isDownloading: Boolean = false,
     val format: String = "",
-
-
+    val downloadType: DownloadType = DownloadType.AUDIO,
+    val startTime: String = "",
+    val endTime: String = "",
 ) {
 
     fun toDomain(): DownloaderState {
@@ -22,6 +24,10 @@ data class DownloaderUiState(
             saveToDirectory = saveToDirectory,
             additionalArguments = additionalArguments,
             ytDlpPath = ytDlpPath,
+            downloadType = downloadType,
+            format = format,
+            startTime,
+            endTime
         )
     }
 

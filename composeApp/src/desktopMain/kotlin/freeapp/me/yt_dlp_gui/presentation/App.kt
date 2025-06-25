@@ -48,18 +48,18 @@ fun App() {
                     .padding(paddingValues) // Scaffold의 TopAppBar 아래에 콘텐츠가 오도록 패딩 적용
             ) {
                 // 사이드바 영역
-                AnimatedVisibility(
-                    visible = isSidebarExpanded,
-                    enter = expandHorizontally(expandFrom = Alignment.Start, animationSpec = tween(durationMillis = 200)),
-                    exit = shrinkHorizontally(shrinkTowards = Alignment.Start, animationSpec = tween(durationMillis = 200))
-                ) {
-                    Sidebar(
-                        modifier = Modifier
-                            .width(200.dp) // 사이드바 너비
-                            .fillMaxHeight()
-                            .background(Color.Gray) // Light grey background
-                    )
-                }
+//                AnimatedVisibility(
+//                    visible = isSidebarExpanded,
+//                    enter = expandHorizontally(expandFrom = Alignment.Start, animationSpec = tween(durationMillis = 200)),
+//                    exit = shrinkHorizontally(shrinkTowards = Alignment.Start, animationSpec = tween(durationMillis = 200))
+//                ) {
+//                    Sidebar(
+//                        modifier = Modifier
+//                            .width(200.dp) // 사이드바 너비
+//                            .fillMaxHeight()
+//                            .background(Color.Gray) // Light grey background
+//                    )
+//                }
 
                 // 메인 콘텐츠 영역
                 Column(

@@ -3,6 +3,7 @@ package freeapp.me.yt_dlp_gui.presentation.downloader
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import freeapp.me.yt_dlp_gui.data.service.YTDlpService
+import freeapp.me.yt_dlp_gui.domain.model.DownloadType
 import freeapp.me.yt_dlp_gui.util.FileChooser
 
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -58,6 +59,43 @@ class DownloaderViewModel(
             state.copy(ytDlpPath = newPath)
         }
     }
+
+    fun updateDownloadType(newDownloadType: DownloadType) {
+        _uiState.update { state ->
+            state.copy(downloadType = newDownloadType)
+        }
+    }
+
+
+    fun updateFormat(newFormat: String) {
+
+        println("updateFormat: $newFormat")
+
+        val format =
+            if (newFormat == "Default") "" else newFormat
+
+        _uiState.update { state ->
+            state.copy(format = format)
+        }
+    }
+
+
+    fun updateStartTime(newStartTime: String) {
+        _uiState.update { state ->
+            state.copy(startTime = newStartTime)
+        }
+    }
+
+
+    fun updateEndTime(newEndTime: String) {
+        _uiState.update { state ->
+            state.copy(endTime = newEndTime)
+        }
+    }
+
+
+
+
 
     // --- 다운로드 관련 비즈니스 로직 함수들 ---
     fun startDownload() {

@@ -1,5 +1,6 @@
 package freeapp.me.yt_dlp_gui.data.service
 
+import freeapp.me.yt_dlp_gui.domain.model.DownloadType
 import freeapp.me.yt_dlp_gui.domain.model.DownloaderState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -28,8 +29,12 @@ class YTDlpService(
     ): Pair<Int, String> {
 
 
-        val (url, fileName, saveToDirectory, additionalArguments, ytDlpPath) =
-            downloadState
+        val (
+            url, fileName, saveToDirectory,
+            additionalArguments, ytDlpPath,
+            downloadType, format,
+            startTime, endTime,
+        ) = downloadState
 
 
         val await = scope.async(Dispatchers.IO) {
@@ -39,7 +44,11 @@ class YTDlpService(
                 onStateUpdate("초기화 중...")
 
                 val command =
-                    buildCommand(ytDlpPath, url, fileName, saveToDirectory, additionalArguments)
+                    buildCommand(
+                        ytDlpPath, url, fileName, saveToDirectory,
+                        additionalArguments, downloadType, format,
+                        startTime, endTime,
+                    )
 
                 println("실행할 명령: ${command.joinToString(" ")}")
 
@@ -76,7 +85,6 @@ class YTDlpService(
 
         val processBuilder =
             ProcessBuilder(command).redirectErrorStream(true) // 에러 스트림을 표준 출력으로 리디렉션하여 함께 읽기
-
 
 
         var process: Process? = null
@@ -121,17 +129,63 @@ class YTDlpService(
         url: String,
         fileName: String,
         saveToDirectory: String,
-        additionalArguments: String
+        additionalArguments: String,
+        downloadType: DownloadType,
+        format: String,
+        startTime: String,
+        endTime: String
     ): List<String> {
 
         val command = mutableListOf<String>()
 
-        // 1. yt-dlp 실행 경로 (설정에서 가져오거나 기본값 사용)
+        // 1. yt-dlp 실행 경로
         command.add(ytDlpPath)
+
+
+
+        when (downloadType) {
+            DownloadType.AUDIO -> {
+                command.add("-x") // 오디오 추출
+                if (format == "MP3") {
+                    command.add("--audio-format")
+                    command.add("mp3")
+                }
+            }
+
+            DownloadType.VIDEO_FULL -> {
+                if (format == "MP4") {
+                    command.add("--merge-output-format")
+                    command.add("mp4")
+                }
+            }
+
+            DownloadType.VIDEO_PARTIAL -> {
+                command.add("--download-sections")
+
+                val section = buildString {
+                    if (!startTime.isNullOrBlank()) append("from $startTime")
+                    if (!endTime.isNullOrBlank()) {
+                        if (isNotEmpty()) append(" ")
+                        append("to $endTime")
+                    }
+                }
+
+                if (section.isNotBlank()) {
+                    command.add("*$section")
+                }
+
+
+                if (format == "MP4") {
+                    command.add("--merge-output-format")
+                    command.add("mp4")
+                }
+            }
+        }
+
 
         // 2. 출력 경로 설정 (파일명이 있을 경우만 적용)
         if (fileName.isNotBlank()) {
-            val outputPath = "$saveToDirectory${File.separator}$fileName"
+            val outputPath = "$saveToDirectory${File.separator}$fileName.%(ext)s"
             command.add("-o")
             command.add(outputPath)
         } else {

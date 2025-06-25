@@ -149,7 +149,7 @@ fun DownloadLogViewer(
 
 
 @Composable
-fun LogLineItem(line: String) {
+private fun LogLineItem(line: String) {
     val annotatedText = buildAnnotatedString {
         when {
             line.contains("[download]", ignoreCase = true) -> {

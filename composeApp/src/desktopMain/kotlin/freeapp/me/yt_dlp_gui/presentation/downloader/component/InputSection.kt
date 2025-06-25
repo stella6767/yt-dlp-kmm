@@ -178,18 +178,7 @@ fun FolderInputSection(
         Spacer(Modifier.width(8.dp))
 
         Button(
-            onClick = {
-
-                function()
-
-//                coroutineScope.launch {
-//                    val selectedPath = chooseDirectory()
-//                    selectedPath?.let { onValueChange(it) }
-//                }
-
-                //isFileChooserOpen = true
-                //openFileDialog(title = "directory choose", allowedExtensions = listOf())
-            },
+            onClick = { function() },
             modifier = Modifier.height(56.dp), // 텍스트 필드와 높이 맞추기
             shape = RoundedCornerShape(8.dp), // 둥근 모서리
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE0E0E0)) // 버튼 색상 (회색)

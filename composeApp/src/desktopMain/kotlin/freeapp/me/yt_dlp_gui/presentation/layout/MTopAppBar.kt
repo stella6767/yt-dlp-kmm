@@ -30,11 +30,11 @@ fun MTopAppBar(onToggleSidebar: () -> Unit) {
                 style = MaterialTheme.typography.titleSmall
             )
         },
-        navigationIcon = {
-            // TopAppBar의 navigationIcon 슬롯에 사이드바 토글 버튼 배치
-            IconButton(onClick = onToggleSidebar) {
-                Icon(Icons.Filled.Menu, contentDescription = "Toggle Sidebar")
-            }
-        },
+//        navigationIcon = {
+//            // TopAppBar의 navigationIcon 슬롯에 사이드바 토글 버튼 배치
+//            IconButton(onClick = onToggleSidebar) {
+//                Icon(Icons.Filled.Menu, contentDescription = "Toggle Sidebar")
+//            }
+//        },
     )
 }

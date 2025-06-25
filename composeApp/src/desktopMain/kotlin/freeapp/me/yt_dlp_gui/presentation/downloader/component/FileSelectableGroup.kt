@@ -1,22 +1,33 @@
 package freeapp.me.yt_dlp_gui.presentation.downloader.component
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import freeapp.me.yt_dlp_gui.domain.model.DownloadType
+import freeapp.me.yt_dlp_gui.presentation.downloader.DownloaderViewModel
+import freeapp.me.yt_dlp_gui.util.TimeFormatTransformation
+import org.koin.compose.viewmodel.koinViewModel
 
 
 @Composable
@@ -26,66 +37,111 @@ fun FileSelectableGroup(
 ) {
 
 
-    Row(modifier = Modifier.selectableGroup()) {
 
+    Column (
+        //verticalArrangement =  Arrangement.spacedBy(16.dp),
+        modifier = Modifier.selectableGroup().fillMaxWidth()
+    ) {
 
         DownloadType.entries.forEach { entry ->
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                RadioButton(
-                    selected = downloadType == entry,
-                    onClick = { onOptionSelected(entry) }
-                )
-                Text(entry.displayName, modifier = Modifier.clickable(onClick = { onOptionSelected(entry) }))
+            if (entry != DownloadType.VIDEO_PARTIAL) {
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    RadioButton(
+                        selected = downloadType == entry,
+                        onClick = { onOptionSelected(entry) }
+                    )
+                    Text(entry.displayName, modifier = Modifier.clickable(onClick = { onOptionSelected(entry) }))
+                }
+                Spacer(Modifier.height(4.dp))
+
+            } else {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    RadioButton(
+                        selected = downloadType == entry,
+                        onClick = { onOptionSelected(entry) }
+                    )
+                    Text(entry.displayName, modifier = Modifier.clickable(onClick = { onOptionSelected(entry) }))
+
+                    PartialDownloadTimeSection(
+//                        startTime,
+//                        endTime,
+//                        onStartTimeChange = { startTime = it },
+//                        onEndTimeChange = { endTime = it },
+                        downloadType == entry
+                    )
+
+                }
+
             }
-            Spacer(Modifier.height(4.dp))
-
         }
-
-
-//        Row(verticalAlignment = Alignment.CenterVertically) {
-//            RadioButton(
-//                selected = selectedVideoOption1 == "Audio",
-//                onClick = { selectedVideoOption1 = "Audio" }
-//            )
-//            Text("Audio", modifier = Modifier.clickable(onClick = { selectedVideoOption1 = "Audio" }))
-//        }
-//        Spacer(Modifier.height(4.dp))
-//        Row(verticalAlignment = Alignment.CenterVertically) {
-//            RadioButton(
-//                selected = selectedVideoOption1 == "Video (full)",
-//                onClick = { selectedVideoOption1 = "Video (full)" }
-//            )
-//            Text("Video (full)", modifier = Modifier.clickable(onClick = { selectedVideoOption1 = "Video (full)" }))
-//        }
-//        Spacer(Modifier.height(4.dp))
-//        Row(verticalAlignment = Alignment.CenterVertically) {
-//            RadioButton(
-//                selected = selectedVideoOption1 == "Video (partial)",
-//                onClick = { selectedVideoOption1 = "Video (partial)" }
-//            )
-//            Text(
-//                "Video (partial)",
-//                modifier = Modifier.clickable(onClick = { selectedVideoOption1 = "Video (partial)" })
-//            )
-//            Spacer(Modifier.width(16.dp))
-//            // Video (partial)일 때만 Start/End 필드 표시
-//            if (selectedVideoOption1 == "Video (partial)") {
-//                Text("Start:")
-//                TextField(
-//                    value = "", onValueChange = {},
-//                    modifier = Modifier.width(80.dp).padding(horizontal = 4.dp),
-//                    singleLine = true,
-//                    colors = TextFieldDefaults.colors(unfocusedTextColor = Color.LightGray) // 비활성화 느낌
-//                )
-//                Text("End:")
-//                TextField(
-//                    value = "", onValueChange = {},
-//                    modifier = Modifier.width(80.dp).padding(horizontal = 4.dp),
-//                    singleLine = true,
-//                    colors = TextFieldDefaults.colors(unfocusedTextColor = Color.LightGray) // 비활성화 느낌
-//                )
-//            }
-//        }
     }
 }
+
+
+@Composable
+fun PartialDownloadTimeSection(
+    isEnable: Boolean
+) {
+
+    val viewModel: DownloaderViewModel = koinViewModel<DownloaderViewModel>()
+    val uiState by viewModel.uiState.collectAsState()
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            TimeInputField(
+                value = uiState.startTime,
+                onValueChange = viewModel::updateStartTime,
+                label = "HH:MM:SS",
+                modifier = Modifier.width(200.dp),
+                isEnable
+            )
+            TimeInputField(
+                value = uiState.endTime,
+                onValueChange = viewModel::updateEndTime,
+                label = "HH:MM:SS",
+                modifier = Modifier.width(200.dp),
+                isEnable
+            )
+        }
+
+    }
+}
+
+@Composable
+fun TimeInputField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    modifier: Modifier = Modifier,
+    isEnable: Boolean
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = { newValue ->
+            // 시간 형식 유효성 검사 (HH:MM:SS)
+            if (newValue.isEmpty() || newValue.matches(Regex("^\\d{0,2}(:?\\d{0,2})?(:?\\d{0,2})?$"))) {
+                onValueChange(newValue)
+            }
+        },
+        enabled = isEnable,
+        label = { Text(label) },
+        modifier = modifier,
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        visualTransformation = TimeFormatTransformation()
+    )
+
+}
+

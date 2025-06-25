@@ -16,24 +16,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.rememberScrollbarAdapter
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import freeapp.me.yt_dlp_gui.domain.model.DownloadType
 import freeapp.me.yt_dlp_gui.presentation.downloader.component.DownloadLogViewer
 import freeapp.me.yt_dlp_gui.presentation.downloader.component.FileSelectableGroup
+import freeapp.me.yt_dlp_gui.presentation.downloader.component.FormatOption
 import freeapp.me.yt_dlp_gui.presentation.downloader.component.InputSectionContainer
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -44,29 +38,13 @@ fun DownloaderScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
-
-
-    // 라디오 버튼 그룹 상태 관리
-
-    val downloadTypes = DownloadType.entries
-    var downloadType by remember { mutableStateOf(downloadTypes[0]) }
-
-    val audioFormats = listOf("Default", "MP3")
-    var selectedAudioFormat by remember { mutableStateOf(audioFormats[0]) }
-
-    val videoFormats = listOf("Default", "MP4")
-    var selectedVideoFormat by remember { mutableStateOf(videoFormats[0]) }
-
     val stateVertical = rememberScrollState(0)
-
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(start = 10.dp, end = 10.dp),
     ) {
-
-
         Column(
             modifier =
                 Modifier
@@ -79,65 +57,17 @@ fun DownloaderScreen(
 
             InputSectionContainer()
 
-            Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                // Audio/Video Radio Buttons
-                FileSelectableGroup(
-                    downloadType,
-                    { downloadType = it }
-                )
-            }
+            // Audio/Video Radio Buttons
+            FileSelectableGroup(
+                uiState.downloadType,
+                viewModel::updateDownloadType,
+            )
 
             // Audio format and Video format Radio Buttons
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text("Audio format:")
-                Row(modifier = Modifier.selectableGroup()) {
-                    audioFormats.forEach { text ->
-                        Row(
-                            Modifier
-                                .selectable(
-                                    selected = (text == selectedAudioFormat),
-                                    onClick = { selectedAudioFormat = text }
-                                )
-                                .padding(horizontal = 4.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            RadioButton(
-                                selected = (text == selectedAudioFormat),
-                                onClick = null // null is used because the row has a clickable modifier
-                            )
-                            Text(text)
-                        }
-                    }
-                }
-                Spacer(Modifier.width(32.dp)) // 간격
-
-                Text("Video format:")
-                Row(modifier = Modifier.selectableGroup()) {
-                    videoFormats.forEach { text ->
-                        Row(
-                            Modifier
-                                .selectable(
-                                    selected = (text == selectedVideoFormat),
-                                    onClick = { selectedVideoFormat = text }
-                                )
-                                .padding(horizontal = 4.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            RadioButton(
-                                selected = (text == selectedVideoFormat),
-                                onClick = null
-                            )
-                            Text(text)
-                        }
-                    }
-                }
-            }
+            FormatOption(
+                uiState.downloadType,
+                viewModel::updateFormat
+            )
 
             // Action Buttons
             Row(
@@ -157,7 +87,7 @@ fun DownloaderScreen(
                     Text("Abort")
                 }
                 Spacer(Modifier.width(16.dp))
-                Button(onClick = { /* TODO: Update yt-dlp */ }) { Text("Update yt-dlp") }
+                //Button(onClick = { /* TODO: Update yt-dlp */ }) { Text("Update yt-dlp") }
             }
 
 
@@ -188,4 +118,5 @@ fun DownloaderScreen(
 
 
 }
+
 
