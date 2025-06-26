@@ -5,7 +5,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import freeapp.me.yt_dlp_gui.config.di.initKoin
-import freeapp.me.yt_dlp_gui.presentation.App
+import freeapp.me.yt_dlp_gui.app.App
 
 fun main() = application {
 

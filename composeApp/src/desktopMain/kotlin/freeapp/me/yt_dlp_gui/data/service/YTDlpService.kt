@@ -21,6 +21,9 @@ class YTDlpService(
     private var currentProcessJob: Job? = null // Job을 추적하여 취소 가능하게 함
     private val processMutex = Mutex()
 
+    //todo multiple queue, navigation, setting screen
+
+
 
     suspend fun downloadVideo(
         scope: CoroutineScope,

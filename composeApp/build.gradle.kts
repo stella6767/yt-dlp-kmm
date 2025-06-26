@@ -5,6 +5,9 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+
+    kotlin("plugin.serialization") version "2.1.21"
+
 }
 
 kotlin {
@@ -15,8 +18,8 @@ kotlin {
 
         commonMain.dependencies {
 
-            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.0-beta03")
-
+            implementation(libs.jetbrains.compose.navigation)
+            implementation(libs.kotlinx.serialization.json)
 
             implementation(libs.koin.core)
             implementation(libs.koin.compose)

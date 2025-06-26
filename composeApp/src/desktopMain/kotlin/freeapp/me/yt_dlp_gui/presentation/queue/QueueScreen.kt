@@ -1,4 +1,4 @@
-package freeapp.me.yt_dlp_gui.presentation.downloader
+package freeapp.me.yt_dlp_gui.presentation.queue
 
 import androidx.compose.foundation.LocalScrollbarStyle
 import androidx.compose.foundation.VerticalScrollbar
@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
-
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -20,11 +18,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import freeapp.me.yt_dlp_gui.presentation.downloader.DownloaderViewModel
 import freeapp.me.yt_dlp_gui.presentation.downloader.component.DownloadLogViewer
 import freeapp.me.yt_dlp_gui.presentation.downloader.component.FileSelectableGroup
 import freeapp.me.yt_dlp_gui.presentation.downloader.component.FormatOption
@@ -33,7 +33,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 
 @Composable
-fun DownloaderScreen(
+fun QueueScreen(
     viewModel: DownloaderViewModel = koinViewModel<DownloaderViewModel>()
 ) {
 
@@ -91,12 +91,7 @@ fun DownloaderScreen(
             }
 
 
-            DownloadLogViewer(
-                log = uiState.resultLog,
-                modifier = Modifier.fillMaxWidth(),
-                onCopyLog = viewModel::copyLogToClipboard,
-                onClearLog = viewModel::clearLog
-            )
+
 
 
         }
@@ -118,5 +113,3 @@ fun DownloaderScreen(
 
 
 }
-
-
