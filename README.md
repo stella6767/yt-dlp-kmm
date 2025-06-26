@@ -6,6 +6,9 @@
 This project is a desktop GUI application for yt-dlp, built on KMM (Kotlin Multiplatform Mobile). It leverages Compose Multiplatform to provide a user-friendly interface that runs on desktop environments.
 
 
+![img.png](img.png)
+
+
 ### 📋 Prerequisites
 
 * **FFmpeg** [FFmpeg](https://github.com/FFmpeg/FFmpeg)
@@ -17,8 +20,6 @@ This project is a desktop GUI application for yt-dlp, built on KMM (Kotlin Multi
 2.  Find the latest release (e.g., `v1.0.0`).
 3.  Download the appropriate installer file for your OS:
     * **macOS:** `.dmg` file
-    * **Windows:** `.msi` file
-    * **Linux:** `.deb` file
 4.  Run the installer file and follow the on-screen instructions.
 
 
@@ -44,15 +45,15 @@ If you prefer to build the application yourself, follow these steps:
 
     * **macOS (`.dmg`):**
         ```bash
-        ./gradlew packageDmg
+        ./gradlew :composeApp:packageDmg
         ```
     * **Windows (`.msi`):**
         ```bash
-        ./gradlew packageMsi
+        ./gradlew :composeApp:packageMsi
         ```
     * **Linux (`.deb`):**
         ```bash
-        ./gradlew packageDeb
+        ./gradlew :composeApp:packageDeb
         ```
 
 ---
