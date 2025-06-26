@@ -5,6 +5,6 @@ import freeapp.me.yt_dlp_gui.util.findYtDlpPath
 import freeapp.me.yt_dlp_gui.util.getDefaultDownloadDir
 
 data class SettingUiState(
-    val saveToDirectory: String = getDefaultDownloadDir(),
-    val ytDlpPath: String = findYtDlpPath()
+    val saveToDirectory: String = "",
+    val ytDlpPath: String = ""
 )

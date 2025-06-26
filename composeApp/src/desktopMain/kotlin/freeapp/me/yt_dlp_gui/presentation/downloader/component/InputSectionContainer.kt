@@ -33,14 +33,7 @@ fun InputSectionContainer() {
             "leave empty for default name",
             100.dp,
             viewModel::updateFileName)
-        FolderInputSection(
-            value = uiState.saveToDirectory,
-            title = "Save to",
-            "",
-            100.dp,
-            viewModel::onSaveToDirectoryBrowseClick,
-            Icons.Default.FolderOpen,
-        )
+
         // Additional arguments
         TextInputSection(
             value = uiState.additionalArguments,
@@ -48,15 +41,6 @@ fun InputSectionContainer() {
             placeholder = "",
             200.dp,
             viewModel::updateAdditionalArguments
-        )
-        // yt-dlp 및 ffmpeg 경로 입력 섹션
-        FolderInputSection(
-            value = uiState.ytDlpPath,
-            title = "yt-dlp path",
-            placeholder = uiState.ytDlpPath,
-            100.dp,
-            viewModel::onYTDlpPathBrowseClick,
-            Icons.Default.FileOpen,
         )
 
 

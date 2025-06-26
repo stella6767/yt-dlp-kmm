@@ -21,14 +21,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
+
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import freeapp.me.yt_dlp_gui.presentation.downloader.DownloaderViewModel
-import freeapp.me.yt_dlp_gui.presentation.downloader.component.FolderInputSection
+
 import freeapp.me.yt_dlp_gui.presentation.setting.component.FolderInputSection2
-import freeapp.me.yt_dlp_gui.presentation.setting.component.TestInputSection
+
 import org.koin.compose.viewmodel.koinViewModel
 
 

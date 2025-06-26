@@ -2,6 +2,8 @@ package freeapp.me.yt_dlp_gui.data.service
 
 import freeapp.me.yt_dlp_gui.domain.model.DownloadType
 import freeapp.me.yt_dlp_gui.domain.model.DownloaderState
+import freeapp.me.yt_dlp_gui.util.findYtDlpPath
+import freeapp.me.yt_dlp_gui.util.getDefaultDownloadDir
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -17,13 +19,29 @@ class YTDlpService(
 
 ) {
 
+    private var ytDlpPath: String = findYtDlpPath()
+    private var saveToDirectory: String = getDefaultDownloadDir()
     private var currentProcess: Process? = null
     private var currentProcessJob: Job? = null // Job을 추적하여 취소 가능하게 함
     private val processMutex = Mutex()
 
+
     //todo multiple queue, navigation, setting screen
 
 
+    fun getSettingState(): Pair<String, String> {
+        return Pair(ytDlpPath, saveToDirectory)
+    }
+
+    fun updateYtDlpPath(newPath: String): String {
+        this.ytDlpPath = newPath
+        return this.ytDlpPath
+    }
+
+    fun updateSaveToDirectory(newPath: String): String {
+        this.saveToDirectory = newPath
+        return this.saveToDirectory
+    }
 
     suspend fun downloadVideo(
         scope: CoroutineScope,
@@ -33,8 +51,8 @@ class YTDlpService(
 
 
         val (
-            url, fileName, saveToDirectory,
-            additionalArguments, ytDlpPath,
+            url, fileName,
+            additionalArguments,
             downloadType, format,
             startTime, endTime,
         ) = downloadState
@@ -48,7 +66,7 @@ class YTDlpService(
 
                 val command =
                     buildCommand(
-                        ytDlpPath, url, fileName, saveToDirectory,
+                        url, fileName,
                         additionalArguments, downloadType, format,
                         startTime, endTime,
                     )
@@ -128,10 +146,8 @@ class YTDlpService(
 
 
     private fun buildCommand(
-        ytDlpPath: String,
         url: String,
         fileName: String,
-        saveToDirectory: String,
         additionalArguments: String,
         downloadType: DownloadType,
         format: String,
@@ -143,7 +159,6 @@ class YTDlpService(
 
         // 1. yt-dlp 실행 경로
         command.add(ytDlpPath)
-
 
 
         when (downloadType) {

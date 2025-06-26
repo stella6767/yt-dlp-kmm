@@ -22,9 +22,7 @@ data class DownloaderUiState(
         return DownloaderState(
             url = url,
             fileName = fileName,
-            saveToDirectory = saveToDirectory,
             additionalArguments = additionalArguments,
-            ytDlpPath = ytDlpPath,
             downloadType = downloadType,
             format = format,
             formatTimeString(startTime) ,

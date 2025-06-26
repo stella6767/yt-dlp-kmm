@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.compareTo
 
 class SettingViewModel(
     private val ytDlpService: YTDlpService
@@ -20,22 +21,41 @@ class SettingViewModel(
     private val _uiState =
         MutableStateFlow(SettingUiState())
 
-    val uiState: StateFlow<SettingUiState> = _uiState.onStart {}.stateIn(
+    val uiState: StateFlow<SettingUiState> = _uiState.onStart {
+        loadSettingState()
+    }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000L),
         _uiState.value
     )
 
+    private fun loadSettingState() {
+        viewModelScope.launch {
+            val (ytDlpPath, downloadPath) =
+                ytDlpService.getSettingState()
+            _uiState.update {
+                it.copy(
+                    ytDlpPath = ytDlpPath,
+                    saveToDirectory = downloadPath
+                )
+            }
+        }
+    }
+
 
     fun updateSaveToDirectory(newDirectory: String) {
+        val directory =
+            ytDlpService.updateSaveToDirectory(newDirectory)
         _uiState.update { state ->
-            state.copy(saveToDirectory = newDirectory)
+            state.copy(saveToDirectory = directory)
         }
     }
 
     fun updateYTDlpPath(newPath: String) {
+        val updateYtDlpPath =
+            ytDlpService.updateYtDlpPath(newPath)
         _uiState.update { state ->
-            state.copy(ytDlpPath = newPath)
+            state.copy(ytDlpPath = updateYtDlpPath)
         }
     }
 

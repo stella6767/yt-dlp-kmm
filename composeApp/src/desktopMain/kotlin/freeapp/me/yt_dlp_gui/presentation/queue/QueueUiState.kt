@@ -3,16 +3,18 @@ package freeapp.me.yt_dlp_gui.presentation.queue
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import freeapp.me.yt_dlp_gui.domain.model.DownloadStatus
+import freeapp.me.yt_dlp_gui.domain.model.DownloadType
 import java.sql.Time
 
 data class QueueUiState(
     val url: String = "",
     val fileName: String = "",
-    val saveToDirectory: String = "",
     val additionalArguments: String = "",
-    val ytDlpPath: String = "/opt/homebrew/Cellar/yt-dlp/2025.4.30/libexec/bin/yt-dlp", // 기본 경로
-
-
+    val isDownloading: Boolean = false,
+    val format: String = "",
+    val downloadType: DownloadType = DownloadType.AUDIO,
+    val startTime: String = "",
+    val endTime: String = "",
 )
 
 data class DownloadItem(
