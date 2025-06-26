@@ -29,6 +29,7 @@ import freeapp.me.yt_dlp_gui.presentation.downloader.component.DownloadLogViewer
 import freeapp.me.yt_dlp_gui.presentation.downloader.component.FileSelectableGroup
 import freeapp.me.yt_dlp_gui.presentation.downloader.component.FormatOption
 import freeapp.me.yt_dlp_gui.presentation.downloader.component.InputSectionContainer
+import freeapp.me.yt_dlp_gui.presentation.queue.component.DownloadList
 import org.koin.compose.viewmodel.koinViewModel
 
 
@@ -90,6 +91,15 @@ fun QueueScreen(
                 //Button(onClick = { /* TODO: Update yt-dlp */ }) { Text("Update yt-dlp") }
             }
 
+
+
+//            DownloadList(
+//                downloadItems = currentDownloadItems,
+//                onItemCheckedChanged = { item, isChecked ->
+//                    viewModel.updateDownloadItemSelection(item, isChecked)
+//                },
+//                modifier = Modifier.fillMaxWidth()
+//            )
 
 
 

@@ -9,3 +9,13 @@ enum class DownloadType(
 }
 
 
+enum class DownloadStatus(
+
+) {
+    WAITING,
+    DOWNLOADING,
+    COMPLETED,
+    FAILED,
+    CANCELED
+}
+

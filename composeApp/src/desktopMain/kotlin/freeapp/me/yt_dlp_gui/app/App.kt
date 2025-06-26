@@ -26,6 +26,7 @@ import androidx.navigation.compose.rememberNavController
 import freeapp.me.yt_dlp_gui.presentation.downloader.DownloaderScreen
 import freeapp.me.yt_dlp_gui.presentation.layout.MTopAppBar
 import freeapp.me.yt_dlp_gui.presentation.layout.Sidebar
+import freeapp.me.yt_dlp_gui.presentation.queue.QueueScreen
 import freeapp.me.yt_dlp_gui.presentation.setting.SettingScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -91,7 +92,7 @@ fun App() {
                         }
 
                         composable<Route.Queue> {
-                            DownloaderScreen()
+                            QueueScreen()
                         }
 
                         composable<Route.Downloader> {

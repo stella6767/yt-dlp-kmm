@@ -4,6 +4,7 @@ package freeapp.me.yt_dlp_gui.config.di
 
 import freeapp.me.yt_dlp_gui.data.service.YTDlpService
 import freeapp.me.yt_dlp_gui.presentation.downloader.DownloaderViewModel
+import freeapp.me.yt_dlp_gui.presentation.setting.SettingViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -22,6 +23,7 @@ import org.koin.dsl.module // Koin 모듈 DSL을 위한 import
 val appModule = module {
     single<YTDlpService> { YTDlpService() }
     viewModelOf(::DownloaderViewModel)
+    viewModelOf(::SettingViewModel)
 }
 
 fun initKoin(config: KoinAppDeclaration? = null) {
