@@ -1,14 +1,18 @@
 package freeapp.me.yt_dlp_gui.data.service
 
+import freeapp.me.yt_dlp_gui.data.dto.YtDlpMetadata
 import freeapp.me.yt_dlp_gui.domain.model.*
 import freeapp.me.yt_dlp_gui.util.findYtDlpPath
 import freeapp.me.yt_dlp_gui.util.getDefaultDownloadDir
+import freeapp.me.yt_dlp_gui.util.isValidUrl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
@@ -17,6 +21,8 @@ import java.io.InputStreamReader
 class YTDlpService(
 
 ) {
+
+    private val json = Json { ignoreUnknownKeys = true }
 
 
     private var currentProcess: Process? = null
@@ -28,8 +34,7 @@ class YTDlpService(
         saveToDirectory = getDefaultDownloadDir(),
     )
 
-    //todo multiple queue, navigation, setting screen
-
+    //todo multiple queue, Theme 설정 바꾸가 샛팅,
 
     fun findSettingState(): SettingState {
         return settingState
@@ -235,6 +240,61 @@ class YTDlpService(
         command.add(url)
 
         return command
+    }
+
+    suspend fun extractTitle(
+        //scope: CoroutineScope,
+        url: String,
+    ): YtDlpMetadata? {
+
+        isValidUrl(url)
+
+        return withContext(Dispatchers.IO) {
+            try {
+                // yt-dlp 명령: --print-json --skip-download (다운로드 없이 JSON 출력)
+                // -s (--simulate) 옵션도 다운로드 없이 정보를 얻는 데 사용됩니다.
+                // --flat-playlist: 재생 목록의 경우 항목 자체의 정보만 가져오고 내부 비디오는 가져오지 않음
+                // --no-warnings: 경고 메시지 출력 안함
+                val command = listOf(
+                    settingState.ytDlpPath,
+                    "--print-json",
+                    "--skip-download",
+                    "--no-warnings",
+                    url
+                )
+
+                val processBuilder =
+                    ProcessBuilder(command).redirectErrorStream(true)
+
+                val process =
+                    processBuilder.start()
+
+                // 프로세스의 출력을 읽어옵니다.
+                // yt-dlp는 일반적으로 한 줄에 하나의 JSON 객체를 출력합니다.
+                // --print-json을 사용하면 최종적으로 하나의 큰 JSON 객체를 출력합니다.
+                val jsonOutput =
+                    process.inputStream.bufferedReader().use { it.readText() }
+
+                val exitCode = process.waitFor() // 프로세스 종료 대기
+
+                if (exitCode == 0) {
+                    // JSON 파싱
+                    val metadata =
+                        json.decodeFromString<YtDlpMetadata>(jsonOutput)
+
+                    metadata
+                } else {
+                    println("Error running yt-dlp. Exit code: $exitCode")
+                    println("Output: $jsonOutput")
+
+                    null
+                }
+            } catch (e: Exception) {
+                println("IOException: Make sure yt-dlp is installed and in your PATH, or specify its full path.")
+                println(e.message)
+                null
+            }
+        }
     }
 
 

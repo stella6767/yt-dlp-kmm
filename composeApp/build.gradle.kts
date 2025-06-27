@@ -18,6 +18,10 @@ kotlin {
 
         commonMain.dependencies {
 
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.ktor3)
+
+
             implementation(libs.jetbrains.compose.navigation)
             implementation(libs.kotlinx.serialization.json)
 
@@ -41,6 +45,8 @@ kotlin {
         }
 
         desktopMain.dependencies {
+
+            implementation(libs.ktor.client.java)
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
         }

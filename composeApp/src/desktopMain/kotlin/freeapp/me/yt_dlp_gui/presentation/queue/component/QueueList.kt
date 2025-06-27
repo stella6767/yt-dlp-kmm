@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import freeapp.me.yt_dlp_gui.domain.model.QueueItem
 
@@ -73,11 +74,11 @@ fun ListHeader(modifier: Modifier = Modifier) {
         Spacer(Modifier.width(8.dp)) // 체크박스와 이름 사이 간격
 
         // 각 컬럼 헤더
-        Text("url", modifier = Modifier.weight(0.5f), fontWeight = FontWeight.Bold)
-        Text("file name", modifier = Modifier.weight(0.2f), fontWeight = FontWeight.Bold)
-        Text("save to", modifier = Modifier.weight(0.2f), fontWeight = FontWeight.Bold)
+        Text("thumbnail", modifier = Modifier.weight(0.2f), fontWeight = FontWeight.Bold)
+        Text("url", modifier = Modifier.weight(0.3f), fontWeight = FontWeight.Bold)
+        Text("title", modifier = Modifier.weight(0.2f), fontWeight = FontWeight.Bold)
+        Text("duration", modifier = Modifier.weight(0.15f), fontWeight = FontWeight.Bold)
         Text("status", modifier = Modifier.weight(0.15f), fontWeight = FontWeight.Bold)
-        Text("Action", modifier = Modifier.weight(0.15f), fontWeight = FontWeight.Bold)
 
     }
 }
@@ -93,7 +94,9 @@ fun DownloadListItem(
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.small) // 항목 배경색
             .padding(vertical = 8.dp), // 항목 내부 패딩
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+
     ) {
         // 체크박스
         Box(modifier = Modifier.width(48.dp), contentAlignment = Alignment.Center) {
@@ -102,18 +105,28 @@ fun DownloadListItem(
                 onCheckedChange = onCheckedChanged
             )
         }
-        Spacer(Modifier.width(8.dp)) // 체크박스와 이름 사이 간격
+        Spacer(Modifier.width(0.dp)) // 체크박스와 이름 사이 간격
 
-        // 각 데이터 필드
-        Text(item.url, modifier = Modifier.weight(0.5f), style = MaterialTheme.typography.bodyMedium)
-        //Text(item.url, modifier = Modifier.weight(0.5f), style = MaterialTheme.typography.bodyMedium)
-        //Text(item.type, modifier = Modifier.weight(0.2f), style = MaterialTheme.typography.bodyMedium)
-        //Text(item.status.name, modifier = Modifier.weight(0.15f), style = MaterialTheme.typography.bodyMedium)
 
-        Text("file name", modifier = Modifier.weight(0.2f), style = MaterialTheme.typography.bodyMedium)
-        Text("save to", modifier = Modifier.weight(0.2f), style = MaterialTheme.typography.bodyMedium)
+        ThumbnailImage(thumbnailUrl = item.thumbnail, modifier = Modifier.weight(0.2f))
+        Text(
+            item.url,
+            modifier = Modifier.weight(0.3f),
+            style = MaterialTheme.typography.bodyMedium,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+
+        Text(
+            item.title,
+            modifier = Modifier.weight(0.2f),
+            style = MaterialTheme.typography.bodyMedium,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
+
+        Text("duration", modifier = Modifier.weight(0.15f), style = MaterialTheme.typography.bodyMedium)
         Text("status", modifier = Modifier.weight(0.15f), style = MaterialTheme.typography.bodyMedium)
-        Text("Action", modifier = Modifier.weight(0.15f), style = MaterialTheme.typography.bodyMedium)
 
 
     }

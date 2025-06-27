@@ -4,8 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import freeapp.me.yt_dlp_gui.data.service.YTDlpService
 import freeapp.me.yt_dlp_gui.domain.model.DownloadType
-import freeapp.me.yt_dlp_gui.domain.model.QueueItem
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import java.util.UUID
 
 class QueueViewModel(
     private val ytDlpService: YTDlpService
@@ -24,9 +25,30 @@ class QueueViewModel(
 
 
     fun addQueueItem() {
-        _uiState.update { state ->
-            state.copy(queueItems = state.queueItems + listOf(state.currentQueue))
+
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+                    isLoading = true
+                )
+            }
+
+            val metadata =
+                ytDlpService.extractTitle(_uiState.value.currentQueue.url)
+
+            val newItem =
+                _uiState.value.currentQueue.copy(
+                    id = UUID.randomUUID().toString(),
+                    title = metadata?.title ?: "", thumbnail = metadata?.thumbnail ?: "")
+
+            _uiState.update { state ->
+                state.copy(isLoading = false, queueItems = listOf(newItem) + state.queueItems )
+            }
         }
+
+
+
+
     }
 
 

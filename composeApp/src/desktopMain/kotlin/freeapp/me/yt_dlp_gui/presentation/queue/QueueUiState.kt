@@ -8,6 +8,7 @@ import freeapp.me.yt_dlp_gui.domain.model.QueueItem
 data class QueueUiState(
     val currentQueue: QueueItem = QueueItem(),
     val queueItems: List<QueueItem> = emptyList(),
+    val isLoading: Boolean = false,
 )
 
 

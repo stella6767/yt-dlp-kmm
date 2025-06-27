@@ -2,6 +2,8 @@ package freeapp.me.yt_dlp_gui.util
 
 
 import java.io.File
+import java.net.URI
+import java.net.URL
 
 fun formatTimeString(time: String): String {
     val formattedTime = buildString {
@@ -43,3 +45,14 @@ fun getDefaultDownloadDir(): String {
 fun isMac() = System.getProperty("os.name").contains("Mac", ignoreCase = true)
 fun isWindows() = System.getProperty("os.name").contains("Windows", ignoreCase = true)
 fun isLinux() = System.getProperty("os.name").contains("Linux", ignoreCase = true)
+
+
+fun isValidUrl(url: String): Boolean {
+    return try {
+        val parsed = URI(url).toURL()
+        parsed.toURI()
+        true
+    } catch (e: Exception) {
+        false
+    }
+}
