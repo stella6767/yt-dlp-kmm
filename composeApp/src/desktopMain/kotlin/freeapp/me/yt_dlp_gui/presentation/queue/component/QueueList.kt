@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import freeapp.me.yt_dlp_gui.domain.model.QueueItem
+import freeapp.me.yt_dlp_gui.domain.model.queue.QueueItem
 
 
 @Composable
@@ -23,8 +23,7 @@ fun QueueList(
 
     Card(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+            .fillMaxWidth(),
         shape = MaterialTheme.shapes.medium, // 모서리 둥글게
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant), // 배경색
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp) // 그림자
@@ -67,18 +66,14 @@ fun ListHeader(modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // 체크박스 헤더 (전체 선택/해제용) - 현재는 비활성화된 상태
-        Box(modifier = Modifier.weight(0.05f), contentAlignment = Alignment.Center) {
-            //Checkbox(checked = false, onCheckedChange = {}, enabled = false) // 전체 선택/해제 기능 추가 시
-        }
-        Spacer(Modifier.width(8.dp)) // 체크박스와 이름 사이 간격
-
         // 각 컬럼 헤더
-        Text("thumbnail", modifier = Modifier.weight(0.2f), fontWeight = FontWeight.Bold)
-        Text("url", modifier = Modifier.weight(0.3f), fontWeight = FontWeight.Bold)
-        Text("title", modifier = Modifier.weight(0.2f), fontWeight = FontWeight.Bold)
-        Text("duration", modifier = Modifier.weight(0.15f), fontWeight = FontWeight.Bold)
         Text("status", modifier = Modifier.weight(0.1f), fontWeight = FontWeight.Bold)
+        Text("title", modifier = Modifier.weight(0.3f), fontWeight = FontWeight.Bold)
+        Text("Speed", modifier = Modifier.weight(0.1f), fontWeight = FontWeight.Bold)
+        Text("Progress", modifier = Modifier.weight(0.2f), fontWeight = FontWeight.Bold)
+        Text("Size", modifier = Modifier.weight(0.1f), fontWeight = FontWeight.Bold)
+        Text("Added on", modifier = Modifier.weight(0.1f), fontWeight = FontWeight.Bold)
+        Text("Action", modifier = Modifier.weight(0.1f), fontWeight = FontWeight.Bold)
 
     }
 }
@@ -98,17 +93,8 @@ fun DownloadListItem(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
 
     ) {
-        // 체크박스
-        Box(modifier = Modifier.weight(0.05f), contentAlignment = Alignment.Center) {
-            Checkbox(
-                checked = true, // MutableState의 .value 사용
-                onCheckedChange = onCheckedChanged
-            )
-        }
-        Spacer(Modifier.width(0.dp)) // 체크박스와 이름 사이 간격
 
 
-        ThumbnailImage(thumbnailUrl = item.thumbnail, modifier = Modifier.weight(0.2f))
         Text(
             item.url,
             modifier = Modifier.weight(0.3f),

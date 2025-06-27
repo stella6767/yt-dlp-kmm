@@ -1,4 +1,4 @@
-package freeapp.me.yt_dlp_gui.util
+package freeapp.me.yt_dlp_gui.presentation.global
 
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.ui.graphics.Color

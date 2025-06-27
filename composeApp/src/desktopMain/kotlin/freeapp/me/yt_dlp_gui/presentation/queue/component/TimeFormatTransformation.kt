@@ -1,4 +1,4 @@
-package freeapp.me.yt_dlp_gui.util
+package freeapp.me.yt_dlp_gui.presentation.queue.component
 
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping
@@ -17,7 +17,7 @@ class TimeFormatTransformation : VisualTransformation {
             }
         }
 
-        return TransformedText(AnnotatedString(formatted), TimeOffsetMapping)
+        return TransformedText(androidx.compose.ui.text.AnnotatedString(formatted), TimeOffsetMapping)
     }
 
     private object TimeOffsetMapping : OffsetMapping {

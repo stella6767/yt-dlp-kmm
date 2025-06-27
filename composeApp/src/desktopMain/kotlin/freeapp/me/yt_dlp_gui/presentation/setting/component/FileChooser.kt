@@ -1,4 +1,4 @@
-package freeapp.me.yt_dlp_gui.util
+package freeapp.me.yt_dlp_gui.presentation.setting.component
 
 import androidx.compose.ui.awt.ComposeWindow
 import kotlinx.coroutines.Dispatchers

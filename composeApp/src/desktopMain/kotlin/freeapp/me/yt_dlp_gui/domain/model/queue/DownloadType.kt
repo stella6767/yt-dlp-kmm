@@ -1,4 +1,4 @@
-package freeapp.me.yt_dlp_gui.domain.model
+package freeapp.me.yt_dlp_gui.domain.model.queue
 
 enum class DownloadType(
     val displayName: String,

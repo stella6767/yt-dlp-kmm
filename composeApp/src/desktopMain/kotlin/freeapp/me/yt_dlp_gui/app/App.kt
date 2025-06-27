@@ -18,8 +18,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import freeapp.me.yt_dlp_gui.presentation.downloader.DownloaderScreen
-import freeapp.me.yt_dlp_gui.presentation.layout.MTopAppBar
-import freeapp.me.yt_dlp_gui.presentation.layout.Sidebar
+import freeapp.me.yt_dlp_gui.presentation.global.MTopAppBar
+import freeapp.me.yt_dlp_gui.presentation.global.Sidebar
 import freeapp.me.yt_dlp_gui.presentation.queue.QueueScreen
 import freeapp.me.yt_dlp_gui.presentation.setting.SettingScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview

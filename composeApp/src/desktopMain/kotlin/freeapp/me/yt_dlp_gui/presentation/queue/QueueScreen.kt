@@ -2,6 +2,7 @@ package freeapp.me.yt_dlp_gui.presentation.queue
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -13,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import freeapp.me.yt_dlp_gui.presentation.queue.component.FileSelectableGroup
 import freeapp.me.yt_dlp_gui.presentation.downloader.component.InputSectionContainer
+import freeapp.me.yt_dlp_gui.presentation.global.ErrorDialog
 import freeapp.me.yt_dlp_gui.presentation.queue.component.QueueList
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -24,6 +26,15 @@ fun QueueScreen(
 
     val uiState by viewModel.uiState.collectAsState()
     val stateVertical = rememberScrollState(0)
+
+
+    if (uiState.error != null) {
+        ErrorDialog(
+            viewModel::updateError,
+            Modifier,
+            uiState.error!!
+        )
+    }
 
     Box(
         modifier = Modifier

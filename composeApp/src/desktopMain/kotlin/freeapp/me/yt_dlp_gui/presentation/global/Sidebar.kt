@@ -1,4 +1,4 @@
-package freeapp.me.yt_dlp_gui.presentation.layout
+package freeapp.me.yt_dlp_gui.presentation.global
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

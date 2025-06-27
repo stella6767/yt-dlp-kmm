@@ -1,8 +1,8 @@
 package freeapp.me.yt_dlp_gui.presentation.downloader
 
-import freeapp.me.yt_dlp_gui.domain.model.DownloadType
-import freeapp.me.yt_dlp_gui.domain.model.DownloaderState
-import freeapp.me.yt_dlp_gui.util.formatTimeString
+import freeapp.me.yt_dlp_gui.domain.model.queue.DownloadType
+import freeapp.me.yt_dlp_gui.domain.model.queue.DownloaderState
+import freeapp.me.yt_dlp_gui.domain.util.formatTimeString
 
 data class DownloaderUiState(
     val url: String = "",

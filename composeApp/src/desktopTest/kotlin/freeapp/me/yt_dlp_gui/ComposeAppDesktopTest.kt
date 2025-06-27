@@ -2,8 +2,8 @@ package freeapp.me.yt_dlp_gui
 
 import freeapp.me.yt_dlp_gui.data.repository.QueueMemoryRepositoryImpl
 import freeapp.me.yt_dlp_gui.data.service.YTDlpService
-import freeapp.me.yt_dlp_gui.domain.model.QueueItem
-import freeapp.me.yt_dlp_gui.util.isValidUrl
+import freeapp.me.yt_dlp_gui.domain.model.queue.QueueItem
+import freeapp.me.yt_dlp_gui.domain.util.isValidUrl
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals

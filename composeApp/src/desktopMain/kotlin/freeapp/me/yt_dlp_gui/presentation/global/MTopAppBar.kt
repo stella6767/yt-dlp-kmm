@@ -1,4 +1,4 @@
-package freeapp.me.yt_dlp_gui.presentation.layout
+package freeapp.me.yt_dlp_gui.presentation.global
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons

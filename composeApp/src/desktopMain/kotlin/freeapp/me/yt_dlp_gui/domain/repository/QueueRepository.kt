@@ -1,6 +1,6 @@
 package freeapp.me.yt_dlp_gui.domain.repository
 
-import freeapp.me.yt_dlp_gui.domain.model.QueueItem
+import freeapp.me.yt_dlp_gui.domain.model.queue.QueueItem
 
 interface QueueRepository {
 

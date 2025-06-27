@@ -1,6 +1,6 @@
 package freeapp.me.yt_dlp_gui.data.repository
 
-import freeapp.me.yt_dlp_gui.domain.model.QueueItem
+import freeapp.me.yt_dlp_gui.domain.model.queue.QueueItem
 import freeapp.me.yt_dlp_gui.domain.repository.QueueRepository
 import java.util.concurrent.CopyOnWriteArrayList
 

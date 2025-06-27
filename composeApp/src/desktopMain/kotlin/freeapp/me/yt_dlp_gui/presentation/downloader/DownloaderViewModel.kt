@@ -3,7 +3,7 @@ package freeapp.me.yt_dlp_gui.presentation.downloader
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import freeapp.me.yt_dlp_gui.data.service.YTDlpService
-import freeapp.me.yt_dlp_gui.domain.model.DownloadType
+import freeapp.me.yt_dlp_gui.domain.model.queue.DownloadType
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.awt.Toolkit

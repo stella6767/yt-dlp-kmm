@@ -16,8 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import freeapp.me.yt_dlp_gui.domain.model.AudioFormat
-import freeapp.me.yt_dlp_gui.domain.model.VideoFormat
+import freeapp.me.yt_dlp_gui.domain.model.queue.AudioFormat
+import freeapp.me.yt_dlp_gui.domain.model.queue.VideoFormat
 import freeapp.me.yt_dlp_gui.presentation.setting.component.FolderInputSection2
 import freeapp.me.yt_dlp_gui.presentation.setting.component.SettingDropdownRow
 import org.koin.compose.viewmodel.koinViewModel

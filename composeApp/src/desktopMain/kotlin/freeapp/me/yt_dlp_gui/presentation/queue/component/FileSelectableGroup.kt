@@ -14,10 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import freeapp.me.yt_dlp_gui.domain.model.DownloadType
-import freeapp.me.yt_dlp_gui.presentation.downloader.DownloaderViewModel
+import freeapp.me.yt_dlp_gui.domain.model.queue.DownloadType
 import freeapp.me.yt_dlp_gui.presentation.queue.QueueViewModel
-import freeapp.me.yt_dlp_gui.util.TimeFormatTransformation
 import org.koin.compose.viewmodel.koinViewModel
 
 

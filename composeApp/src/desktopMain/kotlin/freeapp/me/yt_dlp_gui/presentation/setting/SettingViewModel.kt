@@ -3,10 +3,10 @@ package freeapp.me.yt_dlp_gui.presentation.setting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import freeapp.me.yt_dlp_gui.data.service.YTDlpService
-import freeapp.me.yt_dlp_gui.domain.model.AudioFormat
-import freeapp.me.yt_dlp_gui.domain.model.SettingState
-import freeapp.me.yt_dlp_gui.domain.model.VideoFormat
-import freeapp.me.yt_dlp_gui.util.FileChooser
+import freeapp.me.yt_dlp_gui.domain.model.queue.AudioFormat
+import freeapp.me.yt_dlp_gui.domain.model.queue.SettingState
+import freeapp.me.yt_dlp_gui.domain.model.queue.VideoFormat
+import freeapp.me.yt_dlp_gui.presentation.setting.component.FileChooser
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 

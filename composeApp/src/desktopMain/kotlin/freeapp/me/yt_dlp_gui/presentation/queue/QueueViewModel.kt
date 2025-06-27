@@ -3,10 +3,13 @@ package freeapp.me.yt_dlp_gui.presentation.queue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import freeapp.me.yt_dlp_gui.data.service.YTDlpService
-import freeapp.me.yt_dlp_gui.domain.model.DownloadStatus
-import freeapp.me.yt_dlp_gui.domain.model.DownloadType
-import freeapp.me.yt_dlp_gui.domain.model.QueueItem
+import freeapp.me.yt_dlp_gui.domain.model.onError
+import freeapp.me.yt_dlp_gui.domain.model.onSuccess
+import freeapp.me.yt_dlp_gui.domain.model.queue.DownloadStatus
+import freeapp.me.yt_dlp_gui.domain.model.queue.DownloadType
+import freeapp.me.yt_dlp_gui.domain.model.queue.QueueItem
 import freeapp.me.yt_dlp_gui.domain.repository.QueueRepository
+import freeapp.me.yt_dlp_gui.domain.util.parseYtdlpProgress
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -48,27 +51,39 @@ class QueueViewModel(
             val metadata =
                 ytDlpService.extractMetaData(_uiState.value.currentQueue.url)
 
-            val newItem =
-                _uiState.value.currentQueue.copy(
-                    id = UUID.randomUUID().toString(),
-                    title = metadata?.title ?: "",
-                    thumbnail = metadata?.thumbnail ?: "",
-                    duration = metadata?.duration ?: 0.00,
-                )
+            metadata.onSuccess { metadata ->
 
-            _uiState.update { state ->
-                state.copy(
-                    isLoading = false, queueItems = listOf(
-                        queueRepository.add(newItem)
-                    ) + state.queueItems
-                )
+                val newItem =
+                    _uiState.value.currentQueue.copy(
+                        id = UUID.randomUUID().toString(),
+                        title = metadata?.title ?: "",
+                        thumbnail = metadata?.thumbnail ?: "",
+                        duration = metadata?.duration ?: 0.00,
+                    )
+
+                _uiState.update { state ->
+                    state.copy(
+                        isLoading = false, queueItems = listOf(
+                            queueRepository.add(newItem)
+                        ) + state.queueItems
+                    )
+                }
+
+            }.onError { error ->
+                _uiState.update { state ->
+                    state.copy(error = error, isLoading = false)
+                }
             }
-
             // 항목 추가 후 즉시 다운로드 프로세스 시작 시도
-            startProcessingQueue()
-            
+            //startProcessingQueue()
         }
+    }
 
+
+    fun updateError() {
+        _uiState.update { state ->
+            state.copy(error = null)
+        }
     }
 
 
@@ -123,13 +138,16 @@ class QueueViewModel(
 
     private fun startProcessingQueue() {
 
+        val items = queueRepository.getAll()
 
         viewModelScope.launch {
-            while (true) {
+            while (items.any { it.status == DownloadStatus.PENDING }) {
 
-                val nextItem = _uiState
-                    .value.queueItems.firstOrNull { it.status == DownloadStatus.PENDING }
+//                val nextItem = _uiState
+//                    .value.queueItems.firstOrNull { it.status == DownloadStatus.PENDING }
 
+                val nextItem =
+                    items.firstOrNull { it.status == DownloadStatus.PENDING }
 
                 if (nextItem == null) {
                     println("No more pending items in queue.")
@@ -142,7 +160,6 @@ class QueueViewModel(
                 // yt-dlpService.downloadVideo는 블로킹이므로 Dispatchers.IO에서 실행
                 val (exitCode, output) = withContext(Dispatchers.IO) {
                     ytDlpService.downloadItem(
-                        this,
                         item = nextItem,
                         onStateUpdate = { logLine ->
                             updateQueueItem(parseYtdlpProgress(nextItem, logLine))
@@ -180,35 +197,27 @@ class QueueViewModel(
     }
 
 
-    private fun parseYtdlpProgress(item: QueueItem, logLine: String): QueueItem {
-        var updatedItem = item.copy(currentLog = logLine)
-
-        // Regex for download progress (e.g., [download] 14.2% of ~30.02GiB at 6.86MiB/s ETA 01:04:04)
-        val downloadProgressRegex =
-            "\\[download\\]\\s+([0-9.]+)%\\s+of\\s+~?([0-9.]+)?(MiB|GiB|KiB|B)?\\s+at\\s+([0-9.]+)?(MiB/s|GiB/s|KiB/s|B/s)?\\s+ETA\\s+(.*)".toRegex()
-        val matchResult = downloadProgressRegex.find(logLine)
-
-        if (matchResult != null) {
-            val (progressStr, _, _, speedStr, _, etaStr) = matchResult.destructured
-            val progress = progressStr.toFloatOrNull()?.div(100f) ?: item.progress
-            val speed = speedStr.ifBlank { "" } + matchResult.groupValues[5].orEmpty() // Combine speed value with unit
-            val eta = etaStr.ifBlank { "" }
-
-            updatedItem = updatedItem.copy(
-                progress = progress,
-                speed = speed,
-                eta = eta,
-                status = DownloadStatus.DOWNLOADING
-            )
-        } else if (logLine.contains("Destination:")) {
-            updatedItem = updatedItem.copy(currentLog = logLine)
-        } else if (logLine.contains("Error")) {
-            updatedItem = updatedItem.copy(status = DownloadStatus.FAILED, currentLog = logLine)
-        }
-        // Add more log parsing rules as needed (e.g., for [ExtractAudio], [ffmpeg], etc.)
-
-        return updatedItem
-    }
+//    fun abortCurrentDownload() {
+//        ytDlpService.abortDownload { logLine ->
+//            println("Abort status: $logLine")
+//
+//            queueRepository.update()
+//
+//            // 현재 다운로드 중인 항목이 있다면 상태를 ABORTED로 업데이트
+//            _uiState.update { state ->
+//                val map = state.queueItems.map { item ->
+//                    if (item.status == DownloadStatus.DOWNLOADING) {
+//                        item.copy(status = DownloadStatus.ABORTED, currentLog = "Download Aborted: $logLine")
+//                    } else {
+//                        item
+//                    }
+//                }
+//                state
+//            }
+//
+//            _isDownloading.value = false // 전체 다운로드 상태를 비활성화
+//        }
+//    }
 
 
 }

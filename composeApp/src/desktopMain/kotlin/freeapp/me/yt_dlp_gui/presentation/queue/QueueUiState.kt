@@ -1,14 +1,13 @@
 package freeapp.me.yt_dlp_gui.presentation.queue
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import freeapp.me.yt_dlp_gui.domain.model.DownloadStatus
-import freeapp.me.yt_dlp_gui.domain.model.QueueItem
+import freeapp.me.yt_dlp_gui.domain.model.DataError
+import freeapp.me.yt_dlp_gui.domain.model.queue.QueueItem
 
 data class QueueUiState(
     val currentQueue: QueueItem = QueueItem(),
     val queueItems: List<QueueItem> = emptyList(),
     val isLoading: Boolean = false,
+    val error: DataError? = null,
 )
 
 

@@ -1,10 +1,16 @@
 package freeapp.me.yt_dlp_gui.data.service
 
 import freeapp.me.yt_dlp_gui.data.dto.YtDlpMetadata
-import freeapp.me.yt_dlp_gui.domain.model.*
-import freeapp.me.yt_dlp_gui.util.findYtDlpPath
-import freeapp.me.yt_dlp_gui.util.getDefaultDownloadDir
-import freeapp.me.yt_dlp_gui.util.isValidUrl
+import freeapp.me.yt_dlp_gui.domain.model.DataError
+import freeapp.me.yt_dlp_gui.domain.model.queue.AudioFormat
+import freeapp.me.yt_dlp_gui.domain.model.queue.DownloadType
+import freeapp.me.yt_dlp_gui.domain.model.queue.DownloaderState
+import freeapp.me.yt_dlp_gui.domain.model.queue.QueueItem
+import freeapp.me.yt_dlp_gui.domain.model.queue.SettingState
+import freeapp.me.yt_dlp_gui.domain.model.queue.VideoFormat
+import freeapp.me.yt_dlp_gui.domain.util.findYtDlpPath
+import freeapp.me.yt_dlp_gui.domain.util.getDefaultDownloadDir
+import freeapp.me.yt_dlp_gui.domain.util.isValidUrl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -16,7 +22,9 @@ import kotlinx.serialization.json.Json
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
-
+import kotlin.math.ln
+import kotlin.math.pow
+import freeapp.me.yt_dlp_gui.domain.model.Result
 
 class YTDlpService(
 
@@ -90,32 +98,35 @@ class YTDlpService(
 
 
     suspend fun downloadItem(
-        scope: CoroutineScope,
         item: QueueItem,
         onStateUpdate: (String) -> Unit
     ): Pair<Int, String> {
 
+        return withContext(Dispatchers.IO) {
+            val job = async {
+                processMutex.withLock {
+                    onStateUpdate("초기화 중...")
+                    val command =
+                        buildCommand(
+                            item.url, item.fileName,
+                            item.additionalArguments, item.downloadType,
+                            item.startTime, item.endTime,
+                        )
 
-        val await = scope.async(Dispatchers.IO) {
+                    println("실행할 명령: ${command.joinToString(" ")}")
 
-            processMutex.withLock {
-                onStateUpdate("초기화 중...")
-                val command =
-                    buildCommand(
-                        item.url, item.fileName,
-                        item.additionalArguments, item.downloadType,
-                        item.startTime, item.endTime,
-                    )
+                    onStateUpdate(command.joinToString(" "))
 
-                println("실행할 명령: ${command.joinToString(" ")}")
+                    val executeCommandSync = executeCommandSync(command, onStateUpdate)
 
-                onStateUpdate(command.joinToString(" "))
-
-                executeCommandSync(command, onStateUpdate)
+                    executeCommandSync
+                }
             }
-        }.await()
+            currentProcessJob = job
+            job.await()
+        }
 
-        return await
+
     }
 
 
@@ -123,15 +134,18 @@ class YTDlpService(
     fun abortDownload(
         onStateUpdate: (String) -> Unit,
     ) {
+
+        currentProcessJob?.cancel()
+
         if (currentProcess != null) {
             currentProcess?.destroyForcibly()
-
             onStateUpdate("abort download")
             println("다운로드 중단 요청됨.")
         } else {
             println("진행 중인 다운로드가 없습니다.")
             onStateUpdate("there is no download process")
         }
+
     }
 
 
@@ -275,9 +289,12 @@ class YTDlpService(
     suspend fun extractMetaData(
         //scope: CoroutineScope,
         url: String,
-    ): YtDlpMetadata? {
+    ): Result<YtDlpMetadata?, DataError> {
 
-        isValidUrl(url)
+
+        if (!isValidUrl(url)) {
+            return Result.Error(DataError.Local.URL)
+        }
 
         return withContext(Dispatchers.IO) {
             try {
@@ -287,8 +304,8 @@ class YTDlpService(
                 // --no-warnings: 경고 메시지 출력 안함
                 val command = listOf(
                     settingState.ytDlpPath,
-                    "--print-json",
-                    "--skip-download",
+                    "--print",
+                    "%(title)s|%(filesize_approx)s",
                     "--no-warnings",
                     url
                 )
@@ -299,33 +316,58 @@ class YTDlpService(
                 val process =
                     processBuilder.start()
 
-                // 프로세스의 출력을 읽어옵니다.
-                // yt-dlp는 일반적으로 한 줄에 하나의 JSON 객체를 출력합니다.
-                // --print-json을 사용하면 최종적으로 하나의 큰 JSON 객체를 출력합니다.
-                val jsonOutput =
+                val output =
                     process.inputStream.bufferedReader().use { it.readText() }
 
                 val exitCode = process.waitFor() // 프로세스 종료 대기
 
                 if (exitCode == 0) {
-                    // JSON 파싱
-                    val metadata =
-                        json.decodeFromString<YtDlpMetadata>(jsonOutput)
-
-                    metadata
+                    println(output)
+                    val (title, size) = parseYtDlpOutput(output)
+                    val metadata = YtDlpMetadata(
+                        title = title,
+                        size = size,
+                    )
+                    Result.Success(metadata)
                 } else {
                     println("Error running yt-dlp. Exit code: $exitCode")
-                    println("Output: $jsonOutput")
+                    println("Output: $output")
+                    Result.Error(DataError.Remote.SERIALIZATION)
 
-                    null
                 }
             } catch (e: Exception) {
                 println("IOException: Make sure yt-dlp is installed and in your PATH, or specify its full path.")
                 println(e.message)
-                null
+                Result.Error(DataError.Remote.SERIALIZATION)
+
             }
         }
     }
 
+
+    fun parseYtDlpOutput(line: String): Pair<String, String> {
+        val parts = line.split("|")
+        if (parts.size < 2) return "" to ""
+
+        val sizeBytes =
+            parts.last().trim().toLongOrNull() ?: 0L
+        val title =
+            parts.dropLast(1).joinToString("|").trim()
+
+        val readableSize = humanReadableByteCount(sizeBytes)
+
+        return title to readableSize
+    }
+
+
+    fun humanReadableByteCount(bytes: Long): String {
+        val unit = 1024
+        if (bytes < unit) return "$bytes B"
+
+        val exp = (ln(bytes.toDouble()) / ln(unit.toDouble())).toInt()
+        val pre = "KMGTPE"[exp - 1] + "iB"
+
+        return String.format("%.1f %s", bytes / unit.toDouble().pow(exp), pre)
+    }
 
 }
