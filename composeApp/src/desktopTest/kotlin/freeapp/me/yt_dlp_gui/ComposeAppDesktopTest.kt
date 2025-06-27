@@ -25,7 +25,9 @@ class ComposeAppDesktopTest {
         command.add("yt-dlp")
         command.add("https://www.youtube.com/watch?v=j9k-kbiemoo&ab_channel=SeanLerwill")
 
-        service.executeCommandSync(command, { } )
+        val (code, str) = service.executeCommandSync(command, { })
+
+        println("$code: $str")
 
     }
 
@@ -73,5 +75,24 @@ class ComposeAppDesktopTest {
         println(isValidUrl("http://"))                     // false
         println(isValidUrl("https://"))                    // false
     }
+
+    @Test
+    fun dataClassTest() {
+
+        val test1 = Test1("test 1", "seven")
+
+        val copy = test1.copy(title = "test 2")
+
+        println(copy)
+
+
+    }
+
+
+    data class Test1(
+        val title: String,
+        val name: String,
+    )
+
 
 }

@@ -21,6 +21,7 @@ kotlin {
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor3)
 
+            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
 
             implementation(libs.jetbrains.compose.navigation)
             implementation(libs.kotlinx.serialization.json)

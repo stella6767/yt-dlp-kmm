@@ -72,20 +72,13 @@ fun QueueScreen(
                 Spacer(Modifier.width(16.dp))
 
                 Button(
-                    onClick = viewModel::addQueueItem,
-                    enabled = !uiState.isLoading,
+                    onClick = viewModel::clearQueues,
+                    enabled = uiState.queueItems.isNotEmpty(),
                 ) {
-                    Text("Remove")
+                    Text("Clear")
                 }
                 Spacer(Modifier.width(16.dp))
 
-                Button(
-                    onClick = viewModel::addQueueItem,
-                    enabled = !uiState.isLoading,
-                ) {
-                    Text("Download")
-                }
-                Spacer(Modifier.width(16.dp))
             }
 
 

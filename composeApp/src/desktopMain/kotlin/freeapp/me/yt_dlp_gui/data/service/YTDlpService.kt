@@ -85,10 +85,8 @@ class YTDlpService(
                         startTime, endTime,
                     )
 
-                println("실행할 명령: ${command.joinToString(" ")}")
-
+                //println("실행할 명령: ${command.joinToString(" ")}")
                 onStateUpdate(command.joinToString(" "))
-
                 executeCommandSync(command, onStateUpdate)
             }
         }.await()
@@ -100,7 +98,7 @@ class YTDlpService(
     suspend fun downloadItem(
         item: QueueItem,
         onStateUpdate: (String) -> Unit
-    ): Pair<Int, String> {
+    ): Result<Int, DataError> {
 
         return withContext(Dispatchers.IO) {
             val job = async {
@@ -123,7 +121,9 @@ class YTDlpService(
                 }
             }
             currentProcessJob = job
-            job.await()
+            val (code, str) = job.await()
+
+            if (code != 0) Result.Error(DataError.Remote.SERIALIZATION) else Result.Success(code)
         }
 
 

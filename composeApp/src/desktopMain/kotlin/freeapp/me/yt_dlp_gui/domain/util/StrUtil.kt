@@ -4,6 +4,7 @@ package freeapp.me.yt_dlp_gui.domain.util
 import freeapp.me.yt_dlp_gui.domain.model.DataError
 import freeapp.me.yt_dlp_gui.domain.model.queue.DownloadStatus
 import freeapp.me.yt_dlp_gui.domain.model.queue.QueueItem
+import kotlinx.datetime.LocalDateTime
 import java.io.File
 import java.net.URI
 
@@ -20,7 +21,6 @@ fun formatTimeString(time: String): String {
     }
     return formattedTime
 }
-
 
 
 fun findYtDlpPath(): String {
@@ -66,25 +66,32 @@ fun parseYtdlpProgress(item: QueueItem, logLine: String): QueueItem {
     // Example log line: "[download] 14.2% of ~30.02GiB at 6.86MiB/s ETA 01:04:04"
     val downloadProgressRegex =
         "\\[download\\]\\s+([0-9.]+)%\\s+of\\s+~?([0-9.]+)(MiB|GiB|KiB|B)?\\s+at\\s+([0-9.]+)?(MiB/s|GiB/s|KiB/s|B/s)?\\s+ETA\\s+(.*)".toRegex()
+
     val matchResult = downloadProgressRegex.find(logLine)
+
+    //println("$logLine" )
 
     if (matchResult != null) {
         val (progressStr, _, _, speedStr, _, etaStr) = matchResult.destructured
         val progress = progressStr.toFloatOrNull()?.div(100f) ?: item.progress
         val speed = speedStr.ifBlank { "" } + matchResult.groupValues[5] // Combine speed value with unit
         val eta = etaStr.ifBlank { "" }
+        if (speed.isNotBlank()) {
+            updatedItem = updatedItem.copy(
+                progress = progress,
+                speed = speed,
+                eta = eta,
+                status = DownloadStatus.DOWNLOADING
+            )
+        }
 
-        updatedItem = updatedItem.copy(
-            progress = progress,
-            speed = speed,
-            eta = eta,
-            status = DownloadStatus.DOWNLOADING
-        )
     } else if (logLine.contains("Destination:")) {
         // Indicate that download is nearing completion or file is being written
         updatedItem = updatedItem.copy(currentLog = logLine)
     } else if (logLine.contains("Error")) {
         updatedItem = updatedItem.copy(status = DownloadStatus.FAILED, currentLog = logLine)
+    } else if (logLine.contains("already been downloaded")) {
+        //todo
     }
 
     return updatedItem
@@ -95,5 +102,30 @@ fun getErrorMessage(error: DataError): String {
     return when (error) {
         is DataError.Remote -> error.msg
         is DataError.Local -> error.msg
+    }
+}
+
+
+fun formatDateTime(dateTime: LocalDateTime, pattern: String = "yyyy-MM-dd HH:mm:ss"): String {
+    return when (pattern) {
+        "yyyy-MM-dd HH:mm:ss" ->
+            "${dateTime.year}-${dateTime.monthNumber.toString().padStart(2, '0')}-${
+                dateTime.dayOfMonth.toString().padStart(2, '0')
+            } " +
+                    "${dateTime.hour.toString().padStart(2, '0')}:${
+                        dateTime.minute.toString().padStart(2, '0')
+                    }:${dateTime.second.toString().padStart(2, '0')}"
+
+        "yyyy-MM-dd" ->
+            "${dateTime.year}-${dateTime.monthNumber.toString().padStart(2, '0')}-${
+                dateTime.dayOfMonth.toString().padStart(2, '0')
+            }"
+
+        "HH:mm:ss" ->
+            "${dateTime.hour.toString().padStart(2, '0')}:${
+                dateTime.minute.toString().padStart(2, '0')
+            }:${dateTime.second.toString().padStart(2, '0')}"
+
+        else -> dateTime.toString()
     }
 }
