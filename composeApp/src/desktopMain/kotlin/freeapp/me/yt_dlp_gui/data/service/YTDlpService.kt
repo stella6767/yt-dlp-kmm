@@ -89,6 +89,36 @@ class YTDlpService(
     }
 
 
+    suspend fun downloadItem(
+        scope: CoroutineScope,
+        item: QueueItem,
+        onStateUpdate: (String) -> Unit
+    ): Pair<Int, String> {
+
+
+        val await = scope.async(Dispatchers.IO) {
+
+            processMutex.withLock {
+                onStateUpdate("초기화 중...")
+                val command =
+                    buildCommand(
+                        item.url, item.fileName,
+                        item.additionalArguments, item.downloadType,
+                        item.startTime, item.endTime,
+                    )
+
+                println("실행할 명령: ${command.joinToString(" ")}")
+
+                onStateUpdate(command.joinToString(" "))
+
+                executeCommandSync(command, onStateUpdate)
+            }
+        }.await()
+
+        return await
+    }
+
+
     // 다운로드 중단 함수
     fun abortDownload(
         onStateUpdate: (String) -> Unit,
@@ -242,7 +272,7 @@ class YTDlpService(
         return command
     }
 
-    suspend fun extractTitle(
+    suspend fun extractMetaData(
         //scope: CoroutineScope,
         url: String,
     ): YtDlpMetadata? {

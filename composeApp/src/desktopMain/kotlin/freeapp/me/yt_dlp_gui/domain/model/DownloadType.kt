@@ -15,10 +15,10 @@ enum class VideoFormat { Default, MP4 }
 enum class DownloadStatus(
 
 ) {
-    WAITING,
+    PENDING,
     DOWNLOADING,
     COMPLETED,
     FAILED,
-    CANCELED
+    ABORTED
 }
 
