@@ -1,20 +1,7 @@
 package freeapp.me.yt_dlp_gui.presentation.queue
 
-import androidx.compose.foundation.LocalScrollbarStyle
-import androidx.compose.foundation.VerticalScrollbar
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.rememberScrollbarAdapter
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,18 +11,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import freeapp.me.yt_dlp_gui.presentation.downloader.DownloaderViewModel
-import freeapp.me.yt_dlp_gui.presentation.downloader.component.DownloadLogViewer
-import freeapp.me.yt_dlp_gui.presentation.downloader.component.FileSelectableGroup
-import freeapp.me.yt_dlp_gui.presentation.downloader.component.FormatOption
+import freeapp.me.yt_dlp_gui.presentation.queue.component.FileSelectableGroup
 import freeapp.me.yt_dlp_gui.presentation.downloader.component.InputSectionContainer
-import freeapp.me.yt_dlp_gui.presentation.queue.component.DownloadList
+import freeapp.me.yt_dlp_gui.presentation.queue.component.QueueList
 import org.koin.compose.viewmodel.koinViewModel
 
 
 @Composable
 fun QueueScreen(
-    viewModel: DownloaderViewModel = koinViewModel<DownloaderViewModel>()
+    viewModel: QueueViewModel = koinViewModel<QueueViewModel>()
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
@@ -52,22 +36,16 @@ fun QueueScreen(
                     .fillMaxSize()
                     .verticalScroll(stateVertical)
                     .padding(start = 10.dp, end = 30.dp),
+
             verticalArrangement = Arrangement.spacedBy(24.dp)
+
         ) {
 
+            InputSectionContainer(viewModel)
 
-            InputSectionContainer()
-
-            // Audio/Video Radio Buttons
             FileSelectableGroup(
-                uiState.downloadType,
+                uiState.currentQueue.downloadType,
                 viewModel::updateDownloadType,
-            )
-
-            // Audio format and Video format Radio Buttons
-            FormatOption(
-                uiState.downloadType,
-                viewModel::updateFormat
             )
 
             // Action Buttons
@@ -75,33 +53,24 @@ fun QueueScreen(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Button(
-                    onClick = viewModel::startDownload,
-                    enabled = !uiState.isDownloading,
+                    onClick = viewModel::addQueueItem,
+                    enabled = !uiState.currentQueue.isDownloading,
                 ) {
-                    Text("Download")
+                    Text("Add")
                 }
                 Spacer(Modifier.width(16.dp))
-                Button(
-                    onClick = viewModel::abortDownload,
-                    enabled = uiState.isDownloading,
-                ) {
-                    Text("Abort")
-                }
-                Spacer(Modifier.width(16.dp))
-                //Button(onClick = { /* TODO: Update yt-dlp */ }) { Text("Update yt-dlp") }
             }
 
 
 
-//            DownloadList(
-//                downloadItems = currentDownloadItems,
+            QueueList(
+                downloadItems = uiState.queueItems,
 //                onItemCheckedChanged = { item, isChecked ->
 //                    viewModel.updateDownloadItemSelection(item, isChecked)
 //                },
-//                modifier = Modifier.fillMaxWidth()
-//            )
-
-
+                onItemCheckedChanged = { item, isChecked -> },
+                modifier = Modifier.fillMaxWidth()
+            )
 
 
         }

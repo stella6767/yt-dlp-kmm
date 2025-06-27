@@ -1,6 +1,5 @@
 package freeapp.me.yt_dlp_gui.util
 
-import androidx.compose.material.darkColors
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.ui.graphics.Color
 

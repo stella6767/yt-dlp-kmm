@@ -1,14 +1,7 @@
-package freeapp.me.yt_dlp_gui.presentation.downloader.component
+package freeapp.me.yt_dlp_gui.presentation.queue.component
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.OutlinedTextField
@@ -17,15 +10,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import freeapp.me.yt_dlp_gui.domain.model.DownloadType
 import freeapp.me.yt_dlp_gui.presentation.downloader.DownloaderViewModel
+import freeapp.me.yt_dlp_gui.presentation.queue.QueueViewModel
 import freeapp.me.yt_dlp_gui.util.TimeFormatTransformation
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -37,9 +28,8 @@ fun FileSelectableGroup(
 ) {
 
 
-
-    Column (
-        //verticalArrangement =  Arrangement.spacedBy(16.dp),
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.selectableGroup().fillMaxWidth()
     ) {
 
@@ -63,15 +53,8 @@ fun FileSelectableGroup(
                         onClick = { onOptionSelected(entry) }
                     )
                     Text(entry.displayName, modifier = Modifier.clickable(onClick = { onOptionSelected(entry) }))
-
-                    PartialDownloadTimeSection(
-//                        startTime,
-//                        endTime,
-//                        onStartTimeChange = { startTime = it },
-//                        onEndTimeChange = { endTime = it },
-                        downloadType == entry
-                    )
-
+                    Spacer(Modifier.width(10.dp))
+                    PartialDownloadTimeSection(downloadType == entry)
                 }
 
             }
@@ -85,38 +68,33 @@ fun PartialDownloadTimeSection(
     isEnable: Boolean
 ) {
 
-    val viewModel: DownloaderViewModel = koinViewModel<DownloaderViewModel>()
+    val viewModel: QueueViewModel = koinViewModel<QueueViewModel>()
     val uiState by viewModel.uiState.collectAsState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            TimeInputField(
-                value = uiState.startTime,
-                onValueChange = viewModel::updateStartTime,
-                label = "HH:MM:SS",
-                modifier = Modifier.width(200.dp),
-                isEnable
-            )
-            TimeInputField(
-                value = uiState.endTime,
-                onValueChange = viewModel::updateEndTime,
-                label = "HH:MM:SS",
-                modifier = Modifier.width(200.dp),
-                isEnable
-            )
-        }
-
+        TimeInputField(
+            value = uiState.currentQueue.startTime,
+            onValueChange = viewModel::updateStartTime,
+            label = "HH:MM:SS",
+            modifier = Modifier.width(200.dp),
+            isEnable
+        )
+        TimeInputField(
+            value = uiState.currentQueue.endTime,
+            onValueChange = viewModel::updateEndTime,
+            label = "HH:MM:SS",
+            modifier = Modifier.width(200.dp),
+            isEnable
+        )
     }
+
 }
 
 @Composable

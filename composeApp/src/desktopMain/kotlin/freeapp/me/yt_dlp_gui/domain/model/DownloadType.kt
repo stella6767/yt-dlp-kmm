@@ -8,6 +8,9 @@ enum class DownloadType(
     VIDEO_PARTIAL("Video (Partial)"),
 }
 
+enum class AudioFormat { Default, MP3 }
+enum class VideoFormat { Default, MP4 }
+
 
 enum class DownloadStatus(
 

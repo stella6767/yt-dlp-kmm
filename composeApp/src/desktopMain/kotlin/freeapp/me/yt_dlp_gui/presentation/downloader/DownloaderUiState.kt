@@ -7,9 +7,7 @@ import freeapp.me.yt_dlp_gui.util.formatTimeString
 data class DownloaderUiState(
     val url: String = "",
     val fileName: String = "",
-    val saveToDirectory: String = "",
     val additionalArguments: String = "",
-    val ytDlpPath: String = "/opt/homebrew/Cellar/yt-dlp/2025.4.30/libexec/bin/yt-dlp", // 기본 경로
     val resultLog: String = "",
     val isDownloading: Boolean = false,
     val format: String = "",
@@ -24,7 +22,6 @@ data class DownloaderUiState(
             fileName = fileName,
             additionalArguments = additionalArguments,
             downloadType = downloadType,
-            format = format,
             formatTimeString(startTime) ,
             formatTimeString(endTime)
         )

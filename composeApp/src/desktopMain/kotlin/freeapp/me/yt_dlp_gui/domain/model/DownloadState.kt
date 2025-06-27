@@ -6,7 +6,6 @@ data class DownloaderState(
     val fileName: String,
     val additionalArguments: String,
     val downloadType: DownloadType,
-    val format: String,
     val startTime: String,
     val endTime: String,
 ) {

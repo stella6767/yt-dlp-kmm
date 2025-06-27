@@ -1,7 +1,6 @@
 package freeapp.me.yt_dlp_gui.data.service
 
-import freeapp.me.yt_dlp_gui.domain.model.DownloadType
-import freeapp.me.yt_dlp_gui.domain.model.DownloaderState
+import freeapp.me.yt_dlp_gui.domain.model.*
 import freeapp.me.yt_dlp_gui.util.findYtDlpPath
 import freeapp.me.yt_dlp_gui.util.getDefaultDownloadDir
 import kotlinx.coroutines.CoroutineScope
@@ -19,29 +18,30 @@ class YTDlpService(
 
 ) {
 
-    private var ytDlpPath: String = findYtDlpPath()
-    private var saveToDirectory: String = getDefaultDownloadDir()
+
     private var currentProcess: Process? = null
     private var currentProcessJob: Job? = null // Job을 추적하여 취소 가능하게 함
     private val processMutex = Mutex()
 
+    private var settingState = SettingState(
+        ytDlpPath = findYtDlpPath(),
+        saveToDirectory = getDefaultDownloadDir(),
+    )
 
     //todo multiple queue, navigation, setting screen
 
 
-    fun getSettingState(): Pair<String, String> {
-        return Pair(ytDlpPath, saveToDirectory)
+    fun findSettingState(): SettingState {
+        return settingState
     }
 
-    fun updateYtDlpPath(newPath: String): String {
-        this.ytDlpPath = newPath
-        return this.ytDlpPath
+    fun updateSettingState(
+        settingState: SettingState
+    ): SettingState {
+        this.settingState = settingState
+        return this.settingState
     }
 
-    fun updateSaveToDirectory(newPath: String): String {
-        this.saveToDirectory = newPath
-        return this.saveToDirectory
-    }
 
     suspend fun downloadVideo(
         scope: CoroutineScope,
@@ -53,8 +53,9 @@ class YTDlpService(
         val (
             url, fileName,
             additionalArguments,
-            downloadType, format,
-            startTime, endTime,
+            downloadType,
+            startTime,
+            endTime,
         ) = downloadState
 
 
@@ -67,7 +68,7 @@ class YTDlpService(
                 val command =
                     buildCommand(
                         url, fileName,
-                        additionalArguments, downloadType, format,
+                        additionalArguments, downloadType,
                         startTime, endTime,
                     )
 
@@ -150,7 +151,6 @@ class YTDlpService(
         fileName: String,
         additionalArguments: String,
         downloadType: DownloadType,
-        format: String,
         startTime: String,
         endTime: String
     ): List<String> {
@@ -158,20 +158,20 @@ class YTDlpService(
         val command = mutableListOf<String>()
 
         // 1. yt-dlp 실행 경로
-        command.add(ytDlpPath)
+        command.add(settingState.ytDlpPath)
 
 
         when (downloadType) {
             DownloadType.AUDIO -> {
                 command.add("-x") // 오디오 추출
-                if (format == "MP3") {
+                if (settingState.audioFormat == AudioFormat.MP3) {
                     command.add("--audio-format")
                     command.add("mp3")
                 }
             }
 
             DownloadType.VIDEO_FULL -> {
-                if (format == "MP4") {
+                if (settingState.videoFormat == VideoFormat.MP4) {
                     command.add("--merge-output-format")
                     command.add("mp4")
                 }
@@ -189,11 +189,10 @@ class YTDlpService(
 
                 if (section.isNotBlank()) {
                     command.add("*$section")
-
                 }
 
 
-                if (format == "MP4") {
+                if (settingState.videoFormat == VideoFormat.MP4) {
                     command.add("--merge-output-format")
                     command.add("mp4")
                 }
@@ -203,13 +202,13 @@ class YTDlpService(
 
         // 2. 출력 경로 설정 (파일명이 있을 경우만 적용)
         if (fileName.isNotBlank()) {
-            val outputPath = "$saveToDirectory${File.separator}$fileName.%(ext)s"
+            val outputPath = "${settingState.saveToDirectory}${File.separator}$fileName.%(ext)s"
             command.add("-o")
             command.add(outputPath)
         } else {
             // 파일명이 없으면 디렉토리만 지정
             command.add("-o")
-            command.add("$saveToDirectory${File.separator}%(title)s.%(ext)s")
+            command.add("${settingState.saveToDirectory}${File.separator}%(title)s.%(ext)s")
         }
 
         // 3. 추가 인자 처리
@@ -237,5 +236,6 @@ class YTDlpService(
 
         return command
     }
+
 
 }

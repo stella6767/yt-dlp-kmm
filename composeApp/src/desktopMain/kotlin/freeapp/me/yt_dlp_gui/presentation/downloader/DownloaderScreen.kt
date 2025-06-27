@@ -1,34 +1,20 @@
 package freeapp.me.yt_dlp_gui.presentation.downloader
 
-import androidx.compose.foundation.LocalScrollbarStyle
-import androidx.compose.foundation.VerticalScrollbar
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
-
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.rememberScrollbarAdapter
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import freeapp.me.yt_dlp_gui.presentation.downloader.component.DownloadLogViewer
-import freeapp.me.yt_dlp_gui.presentation.downloader.component.FileSelectableGroup
-import freeapp.me.yt_dlp_gui.presentation.downloader.component.FormatOption
+import freeapp.me.yt_dlp_gui.presentation.queue.component.FileSelectableGroup
 import freeapp.me.yt_dlp_gui.presentation.downloader.component.InputSectionContainer
+import freeapp.me.yt_dlp_gui.presentation.queue.QueueViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 
@@ -55,7 +41,7 @@ fun DownloaderScreen(
         ) {
 
 
-            InputSectionContainer()
+            InputSectionContainer(koinViewModel<QueueViewModel>())
 
             // Audio/Video Radio Buttons
             FileSelectableGroup(
@@ -63,11 +49,7 @@ fun DownloaderScreen(
                 viewModel::updateDownloadType,
             )
 
-            // Audio format and Video format Radio Buttons
-            FormatOption(
-                uiState.downloadType,
-                viewModel::updateFormat
-            )
+
 
             // Action Buttons
             Row(

@@ -4,15 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import freeapp.me.yt_dlp_gui.data.service.YTDlpService
 import freeapp.me.yt_dlp_gui.domain.model.DownloadType
-import freeapp.me.yt_dlp_gui.util.FileChooser
-import freeapp.me.yt_dlp_gui.util.formatTimeString
-
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.awt.Toolkit
 import java.awt.datatransfer.StringSelection
@@ -43,21 +35,10 @@ class DownloaderViewModel(
         }
     }
 
-    fun updateSaveToDirectory(newDirectory: String) {
-        _uiState.update { state ->
-            state.copy(saveToDirectory = newDirectory)
-        }
-    }
 
     fun updateAdditionalArguments(newArgs: String) {
         _uiState.update { state ->
             state.copy(additionalArguments = newArgs)
-        }
-    }
-
-    fun updateYTDlpPath(newPath: String) {
-        _uiState.update { state ->
-            state.copy(ytDlpPath = newPath)
         }
     }
 
@@ -95,9 +76,6 @@ class DownloaderViewModel(
             state.copy(endTime = newEndTime)
         }
     }
-
-
-
 
 
     // --- 다운로드 관련 비즈니스 로직 함수들 ---
@@ -141,22 +119,6 @@ class DownloaderViewModel(
         }
     }
 
-    fun onSaveToDirectoryBrowseClick() {
-        viewModelScope.launch {
-            val selectedFolder = FileChooser.chooseDirectory()
-            selectedFolder?.let { updateSaveToDirectory(it) }
-        }
-    }
-
-    fun onYTDlpPathBrowseClick() {
-        viewModelScope.launch {
-            val selectedFile = FileChooser.chooseFile(
-                title = "Select File",
-                allowedExtensions = listOf(""), // 실행 파일은 확장자 필터링 안 함
-            )
-            selectedFile?.let { updateYTDlpPath(it) }
-        }
-    }
 
     fun clearLog() {
         _uiState.update {

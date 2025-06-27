@@ -3,23 +3,19 @@ package freeapp.me.yt_dlp_gui.presentation.setting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import freeapp.me.yt_dlp_gui.data.service.YTDlpService
-import freeapp.me.yt_dlp_gui.presentation.downloader.DownloaderUiState
+import freeapp.me.yt_dlp_gui.domain.model.AudioFormat
+import freeapp.me.yt_dlp_gui.domain.model.SettingState
+import freeapp.me.yt_dlp_gui.domain.model.VideoFormat
 import freeapp.me.yt_dlp_gui.util.FileChooser
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlin.compareTo
 
 class SettingViewModel(
     private val ytDlpService: YTDlpService
 ) : ViewModel() {
 
     private val _uiState =
-        MutableStateFlow(SettingUiState())
+        MutableStateFlow(SettingUiState(SettingState()))
 
     val uiState: StateFlow<SettingUiState> = _uiState.onStart {
         loadSettingState()
@@ -31,31 +27,54 @@ class SettingViewModel(
 
     private fun loadSettingState() {
         viewModelScope.launch {
-            val (ytDlpPath, downloadPath) =
-                ytDlpService.getSettingState()
+            val settingState =
+                ytDlpService.findSettingState()
             _uiState.update {
                 it.copy(
-                    ytDlpPath = ytDlpPath,
-                    saveToDirectory = downloadPath
+                    settingState  = settingState
                 )
             }
         }
     }
 
+    fun updateAudioFormat(format: AudioFormat) {
+
+        val newState =
+            _uiState.value.settingState.copy(audioFormat = format)
+
+        _uiState.update { state ->
+            state.copy(settingState = ytDlpService.updateSettingState(newState))
+        }
+    }
+
+
+
+    fun updateVideoFormat(format: VideoFormat) {
+        val newState =
+            _uiState.value.settingState.copy(videoFormat = format)
+        _uiState.update { state ->
+            state.copy(settingState = ytDlpService.updateSettingState(newState))
+        }
+
+    }
 
     fun updateSaveToDirectory(newDirectory: String) {
-        val directory =
-            ytDlpService.updateSaveToDirectory(newDirectory)
+
+        val newState =
+            _uiState.value.settingState.copy(saveToDirectory = newDirectory)
+
         _uiState.update { state ->
-            state.copy(saveToDirectory = directory)
+            state.copy(settingState = ytDlpService.updateSettingState(newState))
         }
     }
 
     fun updateYTDlpPath(newPath: String) {
-        val updateYtDlpPath =
-            ytDlpService.updateYtDlpPath(newPath)
+
+        val newState =
+            _uiState.value.settingState.copy(ytDlpPath = newPath)
+
         _uiState.update { state ->
-            state.copy(ytDlpPath = updateYtDlpPath)
+            state.copy(settingState = ytDlpService.updateSettingState(newState))
         }
     }
 

@@ -1,33 +1,25 @@
 package freeapp.me.yt_dlp_gui.presentation.setting
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FileOpen
 import androidx.compose.material.icons.filled.FolderOpen
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-
+import freeapp.me.yt_dlp_gui.domain.model.AudioFormat
+import freeapp.me.yt_dlp_gui.domain.model.VideoFormat
 import freeapp.me.yt_dlp_gui.presentation.setting.component.FolderInputSection2
-
+import freeapp.me.yt_dlp_gui.presentation.setting.component.SettingDropdownRow
 import org.koin.compose.viewmodel.koinViewModel
 
 
@@ -51,7 +43,7 @@ fun SettingScreen(
         Spacer(Modifier.height(8.dp))
 
         FolderInputSection2(
-            value = uiState.saveToDirectory,
+            value = uiState.settingState.saveToDirectory,
             "???",
             100.dp,
             viewModel::onSaveToDirectoryBrowseClick,
@@ -65,14 +57,50 @@ fun SettingScreen(
         Spacer(Modifier.height(8.dp))
 
         FolderInputSection2(
-            value = uiState.ytDlpPath,
-            placeholder = uiState.ytDlpPath,
+            value = uiState.settingState.ytDlpPath,
+            placeholder = uiState.settingState.ytDlpPath,
             100.dp,
             viewModel::onYTDlpPathBrowseClick,
             Icons.Default.FileOpen,
         )
 
         Divider() // 섹션 구분선
+
+        Spacer(Modifier.height(10.dp))
+        SettingsSectionHeader(text = "Media Format", description = "Set the default audio and video formats.")
+        Spacer(Modifier.height(8.dp))
+
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+
+            SettingDropdownRow(
+                label = "audio format: ",
+                selectedValue = uiState.settingState.audioFormat.name, // 확장 함수 사용
+                options = AudioFormat.entries.map { it.name },
+                onOptionSelected = { selectedName ->
+                    viewModel.updateAudioFormat(
+                        AudioFormat.entries.first { it.name == selectedName }
+                    )
+                }
+            )
+            Spacer(Modifier.width(12.dp))
+
+            SettingDropdownRow(
+                label = "video format: ",
+                selectedValue = uiState.settingState.videoFormat.name, // 확장 함수 사용
+                options = VideoFormat.entries.map { it.name },
+                onOptionSelected = { selectedName ->
+                    viewModel.updateVideoFormat(
+                        VideoFormat.entries.first { it.name == selectedName }
+                    )
+                }
+            )
+
+        }
 
 
     }

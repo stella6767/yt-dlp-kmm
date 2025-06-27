@@ -3,19 +3,13 @@ package freeapp.me.yt_dlp_gui.presentation.queue
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import freeapp.me.yt_dlp_gui.domain.model.DownloadStatus
-import freeapp.me.yt_dlp_gui.domain.model.DownloadType
-import java.sql.Time
+import freeapp.me.yt_dlp_gui.domain.model.QueueItem
 
 data class QueueUiState(
-    val url: String = "",
-    val fileName: String = "",
-    val additionalArguments: String = "",
-    val isDownloading: Boolean = false,
-    val format: String = "",
-    val downloadType: DownloadType = DownloadType.AUDIO,
-    val startTime: String = "",
-    val endTime: String = "",
+    val currentQueue: QueueItem = QueueItem(),
+    val queueItems: List<QueueItem> = emptyList(),
 )
+
 
 data class DownloadItem(
     val id: String = java.util.UUID.randomUUID().toString(), // 고유 ID (목록 key로 사용)
