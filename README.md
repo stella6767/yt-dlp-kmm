@@ -85,3 +85,6 @@ https://www.yes24.com/product/goods/117865901
 https://developer.android.com/develop/ui/compose/custom-modifiers
 https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-drag-drop.html#what-s-next
 https://dev.to/tkuenneth/from-swing-to-compose-desktop-3-23ck
+https://github.com/marcopiovanello/yt-dlp-web-ui
+https://github.com/mhogomchungu/media-downloader/
+https://docs.github.com/ko/communities/setting-up-your-project-for-healthy-contributions/adding-a-license-to-a-repository

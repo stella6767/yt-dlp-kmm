@@ -42,7 +42,7 @@ class YTDlpService(
         saveToDirectory = getDefaultDownloadDir(),
     )
 
-    
+
 
     fun findSettingState(): SettingState {
         return settingState
