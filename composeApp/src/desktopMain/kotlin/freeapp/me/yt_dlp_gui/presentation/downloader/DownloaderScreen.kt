@@ -12,9 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import freeapp.me.yt_dlp_gui.presentation.downloader.component.DownloadLogViewer
-import freeapp.me.yt_dlp_gui.presentation.queue.component.FileSelectableGroup
-import freeapp.me.yt_dlp_gui.presentation.downloader.component.InputSectionContainer
-import freeapp.me.yt_dlp_gui.presentation.queue.QueueViewModel
+import freeapp.me.yt_dlp_gui.presentation.global.component.TextInputSection
+import freeapp.me.yt_dlp_gui.presentation.global.component.FileSelectableGroup
 import org.koin.compose.viewmodel.koinViewModel
 
 
@@ -41,12 +40,40 @@ fun DownloaderScreen(
         ) {
 
 
-            InputSectionContainer(koinViewModel<QueueViewModel>())
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+
+                TextInputSection(value = uiState.url, title = "URL", "", 100.dp, viewModel::updateUrl)
+                TextInputSection(
+                    value = uiState.fileName,
+                    title = "File name",
+                    "leave empty for default name",
+                    100.dp,
+                    viewModel::updateFileName
+                )
+
+                // Additional arguments
+                TextInputSection(
+                    value = uiState.additionalArguments,
+                    title = "Additional arguments",
+                    placeholder = "",
+                    200.dp,
+                    viewModel::updateAdditionalArguments
+                )
+            }
+
+
 
             // Audio/Video Radio Buttons
             FileSelectableGroup(
                 uiState.downloadType,
                 viewModel::updateDownloadType,
+                uiState.startTime,
+                uiState.endTime,
+                viewModel::updateStartTime,
+                viewModel::updateEndTime
             )
 
 
@@ -69,7 +96,6 @@ fun DownloaderScreen(
                     Text("Abort")
                 }
                 Spacer(Modifier.width(16.dp))
-                //Button(onClick = { /* TODO: Update yt-dlp */ }) { Text("Update yt-dlp") }
             }
 
 
@@ -79,7 +105,6 @@ fun DownloaderScreen(
                 onCopyLog = viewModel::copyLogToClipboard,
                 onClearLog = viewModel::clearLog
             )
-
 
         }
 

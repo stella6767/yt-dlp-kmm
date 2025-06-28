@@ -1,4 +1,4 @@
-package freeapp.me.yt_dlp_gui.presentation.queue.component
+package freeapp.me.yt_dlp_gui.presentation.global.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -8,21 +8,22 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import freeapp.me.yt_dlp_gui.domain.model.queue.DownloadType
-import freeapp.me.yt_dlp_gui.presentation.queue.QueueViewModel
-import org.koin.compose.viewmodel.koinViewModel
+import freeapp.me.yt_dlp_gui.presentation.queue.component.TimeFormatTransformation
 
 
 @Composable
 fun FileSelectableGroup(
     downloadType: DownloadType,
-    onOptionSelected: (DownloadType) -> Unit
+    onOptionSelected: (DownloadType) -> Unit,
+    startTime: String,
+    endTime: String,
+    updateStartTime: (String) -> Unit,
+    updateEndTime: (String) -> Unit,
 ) {
 
 
@@ -52,7 +53,13 @@ fun FileSelectableGroup(
                     )
                     Text(entry.displayName, modifier = Modifier.clickable(onClick = { onOptionSelected(entry) }))
                     Spacer(Modifier.width(10.dp))
-                    PartialDownloadTimeSection(downloadType == entry)
+                    PartialDownloadTimeSection(
+                        downloadType == entry,
+                        startTime,
+                        endTime,
+                        updateStartTime,
+                        updateEndTime
+                    )
                 }
 
             }
@@ -63,12 +70,12 @@ fun FileSelectableGroup(
 
 @Composable
 fun PartialDownloadTimeSection(
-    isEnable: Boolean
+    isEnable: Boolean,
+    startTime: String,
+    endTime: String,
+    updateStartTime: (String) -> Unit,
+    updateEndTime: (String) -> Unit,
 ) {
-
-    val viewModel: QueueViewModel = koinViewModel<QueueViewModel>()
-    val uiState by viewModel.uiState.collectAsState()
-
 
 
     Row(
@@ -78,15 +85,15 @@ fun PartialDownloadTimeSection(
     ) {
 
         TimeInputField(
-            value = uiState.currentQueue.startTime,
-            onValueChange = viewModel::updateStartTime,
+            value = startTime,
+            onValueChange = updateStartTime,
             label = "HH:MM:SS",
             modifier = Modifier.width(200.dp),
             isEnable
         )
         TimeInputField(
-            value = uiState.currentQueue.endTime,
-            onValueChange = viewModel::updateEndTime,
+            value = endTime,
+            onValueChange = updateEndTime,
             label = "HH:MM:SS",
             modifier = Modifier.width(200.dp),
             isEnable

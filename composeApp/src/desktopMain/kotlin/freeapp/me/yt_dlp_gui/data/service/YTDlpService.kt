@@ -42,7 +42,7 @@ class YTDlpService(
         saveToDirectory = getDefaultDownloadDir(),
     )
 
-    //todo multiple queue, Theme 설정 바꾸가 샛팅,
+    
 
     fun findSettingState(): SettingState {
         return settingState

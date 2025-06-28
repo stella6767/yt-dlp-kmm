@@ -49,18 +49,6 @@ class DownloaderViewModel(
     }
 
 
-    fun updateFormat(newFormat: String) {
-
-        println("updateFormat: $newFormat")
-
-        val format =
-            if (newFormat == "Default") "" else newFormat
-
-        _uiState.update { state ->
-            state.copy(format = format)
-        }
-    }
-
 
     fun updateStartTime(newStartTime: String) {
 

@@ -12,5 +12,5 @@ sealed interface Route {
     data object Setting: Route
 
     @Serializable
-    data class Downloader(val id: String): Route
+    data object Downloader: Route
 }

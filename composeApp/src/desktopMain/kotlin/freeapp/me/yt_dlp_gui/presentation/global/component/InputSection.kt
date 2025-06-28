@@ -1,4 +1,4 @@
-package freeapp.me.yt_dlp_gui.presentation.downloader.component
+package freeapp.me.yt_dlp_gui.presentation.global.component
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -11,7 +11,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
@@ -51,7 +50,8 @@ fun TextInputSection(
             singleLine = true, // 단일 라인 입력 유지
             // 텍스트 스타일: 색상과 글자 크기 지정
             textStyle = TextStyle(
-                color = Color.White, // <-- 입력 텍스트 색상
+                //color = Color.White, // <-- 입력 텍스트 색상
+                color =  MaterialTheme.colorScheme.outline,
                 fontSize = 14.sp // <-- 텍스트 크기를 40dp 높이에 맞게 조절
             ),
             decorationBox = { innerTextField ->

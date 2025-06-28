@@ -31,7 +31,7 @@ class SettingViewModel(
                 ytDlpService.findSettingState()
             _uiState.update {
                 it.copy(
-                    settingState  = settingState
+                    settingState = settingState
                 )
             }
         }
@@ -46,7 +46,6 @@ class SettingViewModel(
             state.copy(settingState = ytDlpService.updateSettingState(newState))
         }
     }
-
 
 
     fun updateVideoFormat(format: VideoFormat) {
@@ -93,6 +92,15 @@ class SettingViewModel(
                 allowedExtensions = listOf(""), // 실행 파일은 확장자 필터링 안 함
             )
             selectedFile?.let { updateYTDlpPath(it) }
+        }
+    }
+
+    fun updateTheme() {
+
+        println("???")
+
+        _uiState.update { state ->
+            state.copy(settingState = state.settingState.copy(isDarkTheme = !state.settingState.isDarkTheme))
         }
     }
 

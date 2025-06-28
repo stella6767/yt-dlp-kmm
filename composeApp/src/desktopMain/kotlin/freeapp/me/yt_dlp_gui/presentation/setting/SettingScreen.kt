@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FileOpen
 import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -102,6 +103,19 @@ fun SettingScreen(
 
         }
 
+
+
+        Row(
+            modifier = Modifier.padding(top = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Text("Theme", style = MaterialTheme.typography.titleMedium)
+            Switch(
+                checked = uiState.settingState.isDarkTheme,
+                onCheckedChange = { viewModel.updateTheme() }
+            )
+        }
 
     }
 

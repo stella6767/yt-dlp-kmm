@@ -1,4 +1,4 @@
-package freeapp.me.yt_dlp_gui.presentation.global
+package freeapp.me.yt_dlp_gui.presentation.global.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,8 +37,8 @@ fun Sidebar(modifier: Modifier = Modifier, navController: NavHostController) {
 
         SidebarItem(
             icon = Icons.Filled.Download,
-            text = "Download",
-            Route.Downloader("0"),
+            text = "Single Download",
+            Route.Downloader,
             navController
         )
 

@@ -10,7 +10,6 @@ data class DownloaderUiState(
     val additionalArguments: String = "",
     val resultLog: String = "",
     val isDownloading: Boolean = false,
-    val format: String = "",
     val downloadType: DownloadType = DownloadType.AUDIO,
     val startTime: String = "",
     val endTime: String = "",

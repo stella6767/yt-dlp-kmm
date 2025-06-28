@@ -10,19 +10,25 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import freeapp.me.yt_dlp_gui.presentation.downloader.DownloaderScreen
-import freeapp.me.yt_dlp_gui.presentation.global.MTopAppBar
-import freeapp.me.yt_dlp_gui.presentation.global.Sidebar
+import freeapp.me.yt_dlp_gui.presentation.global.component.MTopAppBar
+import freeapp.me.yt_dlp_gui.presentation.global.component.Sidebar
 import freeapp.me.yt_dlp_gui.presentation.queue.QueueScreen
 import freeapp.me.yt_dlp_gui.presentation.setting.SettingScreen
+import freeapp.me.yt_dlp_gui.presentation.setting.SettingViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,8 +37,19 @@ fun App() {
 
     var isSidebarExpanded by remember { mutableStateOf(true) } // State for sidebar expansion
 
+
+    val settingViewModel: SettingViewModel = koinViewModel<SettingViewModel>()
+    val uiState by settingViewModel.uiState.collectAsState()
+
+    val colorScheme = if (uiState.settingState.isDarkTheme){
+        darkColorScheme()
+    } else{
+        lightColorScheme()
+    }
+
+
     MaterialTheme(
-        colorScheme = darkColorScheme(),
+        colorScheme = colorScheme,
         typography = MaterialTheme.typography,
         shapes = MaterialTheme.shapes,
     ) {
@@ -63,7 +80,7 @@ fun App() {
                         modifier = Modifier
                             .width(150.dp) // 사이드바 너비
                             .fillMaxHeight()
-                            .background(MaterialTheme.colorScheme.onSurface),
+                            .background(MaterialTheme.colorScheme.primaryContainer),
                         navController
                     )
                 }
@@ -82,7 +99,7 @@ fun App() {
                         startDestination = Route.Queue
                     ) {
                         composable<Route.Setting> {
-                            SettingScreen()
+                            SettingScreen(settingViewModel)
                         }
 
                         composable<Route.Queue> {
@@ -102,3 +119,15 @@ fun App() {
 
 }
 
+@Composable
+private inline fun <reified T: ViewModel> NavBackStackEntry.sharedKoinViewModel(
+    navController: NavController
+): T {
+    val navGraphRoute = destination.parent?.route ?: return koinViewModel<T>()
+    val parentEntry = remember(this) {
+        navController.getBackStackEntry(navGraphRoute)
+    }
+    return koinViewModel(
+        viewModelStoreOwner = parentEntry
+    )
+}

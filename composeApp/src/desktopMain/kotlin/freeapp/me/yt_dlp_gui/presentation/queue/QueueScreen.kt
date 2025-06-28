@@ -2,7 +2,6 @@ package freeapp.me.yt_dlp_gui.presentation.queue
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -12,9 +11,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import freeapp.me.yt_dlp_gui.presentation.queue.component.FileSelectableGroup
-import freeapp.me.yt_dlp_gui.presentation.downloader.component.InputSectionContainer
-import freeapp.me.yt_dlp_gui.presentation.global.ErrorDialog
+import freeapp.me.yt_dlp_gui.presentation.global.component.FileSelectableGroup
+import freeapp.me.yt_dlp_gui.presentation.queue.component.InputSectionContainer
+import freeapp.me.yt_dlp_gui.presentation.global.component.ErrorDialog
 import freeapp.me.yt_dlp_gui.presentation.queue.component.QueueList
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -57,6 +56,10 @@ fun QueueScreen(
             FileSelectableGroup(
                 uiState.currentQueue.downloadType,
                 viewModel::updateDownloadType,
+                uiState.currentQueue.startTime,
+                uiState.currentQueue.endTime,
+                viewModel::updateStartTime,
+                viewModel::updateEndTime,
             )
 
             // Action Buttons

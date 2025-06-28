@@ -1,4 +1,4 @@
-package freeapp.me.yt_dlp_gui.presentation.downloader.component
+package freeapp.me.yt_dlp_gui.presentation.queue.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,14 +8,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import freeapp.me.yt_dlp_gui.presentation.downloader.DownloaderViewModel
+import freeapp.me.yt_dlp_gui.presentation.global.component.TextInputSection
 import freeapp.me.yt_dlp_gui.presentation.queue.QueueViewModel
-import org.koin.compose.viewmodel.koinViewModel
 
 
 @Composable
 fun InputSectionContainer(
-    viewModel: QueueViewModel
+    viewModel: QueueViewModel,
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
@@ -31,7 +30,8 @@ fun InputSectionContainer(
             title = "File name",
             "leave empty for default name",
             100.dp,
-            viewModel::updateFileName)
+            viewModel::updateFileName
+        )
 
         // Additional arguments
         TextInputSection(
