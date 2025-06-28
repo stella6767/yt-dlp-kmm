@@ -7,7 +7,8 @@ This project is a desktop GUI application for yt-dlp, built on KMM (Kotlin Multi
 
 
 ![img.png](img.png)
-
+![img_1.png](img_1.png)
+![img_2.png](img_2.png)
 
 ### 📋 Prerequisites
 
