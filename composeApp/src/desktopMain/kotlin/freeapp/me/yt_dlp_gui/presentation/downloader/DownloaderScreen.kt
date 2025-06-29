@@ -10,9 +10,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import freeapp.me.yt_dlp_gui.presentation.downloader.component.DownloadLogViewer
-import freeapp.me.yt_dlp_gui.presentation.global.component.TextInputSection
 import freeapp.me.yt_dlp_gui.presentation.global.component.FileSelectableGroup
-import io.kanro.compose.jetbrains.expui.control.ActionButton
+import freeapp.me.yt_dlp_gui.presentation.global.component.TextInputSection
 import io.kanro.compose.jetbrains.expui.control.Label
 import io.kanro.compose.jetbrains.expui.control.PrimaryButton
 import org.koin.compose.viewmodel.koinViewModel

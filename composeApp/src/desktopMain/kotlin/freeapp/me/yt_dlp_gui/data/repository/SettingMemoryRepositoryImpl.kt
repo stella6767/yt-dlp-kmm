@@ -1,14 +1,9 @@
 package freeapp.me.yt_dlp_gui.data.repository
 
-import freeapp.me.yt_dlp_gui.domain.model.DataError
-import freeapp.me.yt_dlp_gui.domain.model.Result
-import freeapp.me.yt_dlp_gui.domain.model.queue.QueueItem
 import freeapp.me.yt_dlp_gui.domain.model.queue.SettingState
-import freeapp.me.yt_dlp_gui.domain.repository.QueueRepository
 import freeapp.me.yt_dlp_gui.domain.repository.SettingRepository
 import freeapp.me.yt_dlp_gui.domain.util.findYtDlpPath
 import freeapp.me.yt_dlp_gui.domain.util.getDefaultDownloadDir
-import java.util.concurrent.CopyOnWriteArrayList
 
 class SettingMemoryRepositoryImpl(
 

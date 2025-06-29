@@ -2,7 +2,6 @@ package freeapp.me.yt_dlp_gui.presentation.setting
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import freeapp.me.yt_dlp_gui.data.service.YTDlpService
 import freeapp.me.yt_dlp_gui.domain.model.queue.AudioFormat
 import freeapp.me.yt_dlp_gui.domain.model.queue.SettingState
 import freeapp.me.yt_dlp_gui.domain.model.queue.VideoFormat

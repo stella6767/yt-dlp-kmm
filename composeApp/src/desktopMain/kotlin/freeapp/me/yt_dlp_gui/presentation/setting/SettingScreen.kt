@@ -3,10 +3,10 @@ package freeapp.me.yt_dlp_gui.presentation.setting
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FileOpen
 import androidx.compose.material.icons.filled.FolderOpen
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
@@ -52,7 +52,7 @@ fun SettingScreen(
         )
 
         Spacer(Modifier.height(10.dp))
-        Divider() // 섹션 구분선
+        HorizontalDivider(Modifier.fillMaxWidth())
         Spacer(Modifier.height(8.dp))
 
         SettingsSectionHeader(text = "yt-dlp path", description = "Set your executable file path")
@@ -66,9 +66,10 @@ fun SettingScreen(
             Icons.Default.FileOpen,
         )
 
-        Divider() // 섹션 구분선
+        Spacer(Modifier.height(8.dp))
+        HorizontalDivider(Modifier.fillMaxWidth()) // 섹션 구분선
+        Spacer(Modifier.height(8.dp))
 
-        Spacer(Modifier.height(10.dp))
         SettingsSectionHeader(text = "Media Format", description = "Set the default audio and video formats.")
         Spacer(Modifier.height(8.dp))
 

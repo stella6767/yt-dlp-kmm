@@ -8,9 +8,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import freeapp.me.yt_dlp_gui.presentation.global.component.ErrorDialog
 import freeapp.me.yt_dlp_gui.presentation.global.component.FileSelectableGroup
 import freeapp.me.yt_dlp_gui.presentation.queue.component.InputSectionContainer
-import freeapp.me.yt_dlp_gui.presentation.global.component.ErrorDialog
 import freeapp.me.yt_dlp_gui.presentation.queue.component.QueueList
 import io.kanro.compose.jetbrains.expui.control.Label
 import io.kanro.compose.jetbrains.expui.control.PrimaryButton

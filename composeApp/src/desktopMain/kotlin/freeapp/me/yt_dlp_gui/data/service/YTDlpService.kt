@@ -2,30 +2,19 @@ package freeapp.me.yt_dlp_gui.data.service
 
 import freeapp.me.yt_dlp_gui.data.dto.YtDlpMetadata
 import freeapp.me.yt_dlp_gui.domain.model.DataError
-import freeapp.me.yt_dlp_gui.domain.model.queue.AudioFormat
-import freeapp.me.yt_dlp_gui.domain.model.queue.DownloadType
-import freeapp.me.yt_dlp_gui.domain.model.queue.DownloaderState
-import freeapp.me.yt_dlp_gui.domain.model.queue.QueueItem
-import freeapp.me.yt_dlp_gui.domain.model.queue.SettingState
-import freeapp.me.yt_dlp_gui.domain.model.queue.VideoFormat
-import freeapp.me.yt_dlp_gui.domain.util.findYtDlpPath
-import freeapp.me.yt_dlp_gui.domain.util.getDefaultDownloadDir
+import freeapp.me.yt_dlp_gui.domain.model.Result
+import freeapp.me.yt_dlp_gui.domain.model.queue.*
+import freeapp.me.yt_dlp_gui.domain.repository.SettingRepository
 import freeapp.me.yt_dlp_gui.domain.util.isValidUrl
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
+import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
 import kotlin.math.ln
 import kotlin.math.pow
-import freeapp.me.yt_dlp_gui.domain.model.Result
-import freeapp.me.yt_dlp_gui.domain.repository.SettingRepository
 
 class YTDlpService(
     private val settingRepository: SettingRepository,
