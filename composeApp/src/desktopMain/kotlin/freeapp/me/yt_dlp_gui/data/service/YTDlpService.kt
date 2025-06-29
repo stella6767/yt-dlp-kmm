@@ -184,7 +184,6 @@ class YTDlpService(
         // 1. yt-dlp 실행 경로
         command.add(settingState.ytDlpPath)
 
-
         when (downloadType) {
             DownloadType.AUDIO -> {
                 command.add("-x") // 오디오 추출

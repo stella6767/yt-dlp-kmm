@@ -5,10 +5,11 @@
 
 This project is a desktop GUI application for yt-dlp, built on KMM (Kotlin Multiplatform Mobile). It leverages Compose Multiplatform to provide a user-friendly interface that runs on desktop environments.
 
-
-![img.png](img.png)
 ![img_1.png](img_1.png)
 ![img_2.png](img_2.png)
+![img.png](img.png)
+
+
 
 ### 📋 Prerequisites
 
@@ -67,6 +68,7 @@ This project is developed using the following technology stack:
 * **Koin:** A dependency injection (DI) framework that helps in writing modular and testable code.
 * **Kotlinx Coroutines:** A library for asynchronous programming.
 * **Jetpack Lifecycle:** Manages the lifecycle of components.
+* **compose-jetbrains-theme:** Jetbrain style UI theme
 
 ---
 

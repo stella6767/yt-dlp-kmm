@@ -69,7 +69,7 @@ fun parseYtdlpProgress(item: QueueItem, logLine: String): QueueItem {
 
     val matchResult = downloadProgressRegex.find(logLine)
 
-    //println("$logLine" )
+    println("$logLine" )
 
     if (matchResult != null) {
         val (progressStr, _, _, speedStr, _, etaStr) = matchResult.destructured
