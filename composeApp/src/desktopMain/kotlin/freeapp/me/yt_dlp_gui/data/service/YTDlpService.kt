@@ -25,35 +25,17 @@ import java.io.InputStreamReader
 import kotlin.math.ln
 import kotlin.math.pow
 import freeapp.me.yt_dlp_gui.domain.model.Result
+import freeapp.me.yt_dlp_gui.domain.repository.SettingRepository
 
 class YTDlpService(
-
+    private val settingRepository: SettingRepository,
 ) {
 
     private val json = Json { ignoreUnknownKeys = true }
 
-
     private var currentProcess: Process? = null
     private var currentProcessJob: Job? = null // Job을 추적하여 취소 가능하게 함
     private val processMutex = Mutex()
-
-    private var settingState = SettingState(
-        ytDlpPath = findYtDlpPath(),
-        saveToDirectory = getDefaultDownloadDir(),
-    )
-
-
-
-    fun findSettingState(): SettingState {
-        return settingState
-    }
-
-    fun updateSettingState(
-        settingState: SettingState
-    ): SettingState {
-        this.settingState = settingState
-        return this.settingState
-    }
 
 
     suspend fun downloadVideo(
@@ -206,6 +188,10 @@ class YTDlpService(
 
         val command = mutableListOf<String>()
 
+
+        val settingState = settingRepository.findSettingState()
+
+
         // 1. yt-dlp 실행 경로
         command.add(settingState.ytDlpPath)
 
@@ -295,6 +281,9 @@ class YTDlpService(
         if (!isValidUrl(url)) {
             return Result.Error(DataError.Local.URL)
         }
+
+        val settingState = settingRepository.findSettingState()
+
 
         return withContext(Dispatchers.IO) {
             try {

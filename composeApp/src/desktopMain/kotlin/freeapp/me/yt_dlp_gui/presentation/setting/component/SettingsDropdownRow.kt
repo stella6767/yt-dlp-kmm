@@ -5,6 +5,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.kanro.compose.jetbrains.expui.control.ComboBox
+import io.kanro.compose.jetbrains.expui.control.DropdownMenuItem
+import io.kanro.compose.jetbrains.expui.control.Label
+import io.kanro.compose.jetbrains.expui.control.TextField
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -17,45 +21,25 @@ fun SettingDropdownRow(
 
     var expanded by remember { mutableStateOf(false) }
 
+
+
+
+
+
+
     Row() {
-        Text(
+        Label(
             label,
-            modifier = Modifier.padding(top = 15.dp),
+            modifier = Modifier.padding(),
             style = MaterialTheme.typography.titleSmall
         )
         Spacer(Modifier.width(10.dp))
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = { expanded = !expanded },
-            modifier = Modifier.width(150.dp).height(50.dp) // 드롭다운 너비
-        ) {
-            OutlinedTextField(
-                value = selectedValue,
-                onValueChange = {}, // 읽기 전용
-                readOnly = true,
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                modifier = Modifier
-                    .menuAnchor(MenuAnchorType.PrimaryNotEditable, true)
-                    .fillMaxWidth(), // 메뉴 앵커 역할
-
-                singleLine = true
-            )
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
-            ) {
-                options.forEach { selectionOption ->
-                    DropdownMenuItem(
-                        text = { Text(selectionOption) },
-                        onClick = {
-                            onOptionSelected(selectionOption)
-                            expanded = false
-                        },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                    )
-                }
-            }
-        }
+        ComboBox(
+            options, selectedValue,
+            onOptionSelected,
+            modifier = Modifier.width(100.dp),
+            menuModifier = Modifier.width(100.dp)
+        )
     }
 
 

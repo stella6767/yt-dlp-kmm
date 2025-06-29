@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import io.kanro.compose.jetbrains.expui.control.Label
 
 
 @Composable
@@ -50,7 +51,7 @@ fun FolderInputSection2(
         ) {
             // 텍스트 필드 대신 읽기 전용 텍스트 사용
             if (value.isNotEmpty()) {
-                Text(
+                Label(
                     text = value,
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1,
@@ -58,7 +59,7 @@ fun FolderInputSection2(
                     modifier = Modifier.fillMaxWidth()
                 )
             } else {
-                Text(
+                Label(
                     text = placeholder,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,

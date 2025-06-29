@@ -2,9 +2,7 @@ package freeapp.me.yt_dlp_gui.presentation.downloader
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -14,6 +12,9 @@ import androidx.compose.ui.unit.dp
 import freeapp.me.yt_dlp_gui.presentation.downloader.component.DownloadLogViewer
 import freeapp.me.yt_dlp_gui.presentation.global.component.TextInputSection
 import freeapp.me.yt_dlp_gui.presentation.global.component.FileSelectableGroup
+import io.kanro.compose.jetbrains.expui.control.ActionButton
+import io.kanro.compose.jetbrains.expui.control.Label
+import io.kanro.compose.jetbrains.expui.control.PrimaryButton
 import org.koin.compose.viewmodel.koinViewModel
 
 
@@ -28,29 +29,30 @@ fun DownloaderScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(start = 10.dp, end = 10.dp),
+            .padding(start = 10.dp),
     ) {
         Column(
             modifier =
                 Modifier
                     .fillMaxSize()
                     .verticalScroll(stateVertical)
-                    .padding(start = 10.dp, end = 30.dp),
+                    .padding(10.dp, end = 30.dp),
+
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
 
 
             Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.fillMaxWidth()
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier.fillMaxWidth().padding(top = 10.dp)
             ) {
 
-                TextInputSection(value = uiState.url, title = "URL", "", 100.dp, viewModel::updateUrl)
+                TextInputSection(value = uiState.url, title = "URL", "", viewModel::updateUrl)
                 TextInputSection(
                     value = uiState.fileName,
                     title = "File name",
                     "leave empty for default name",
-                    100.dp,
+
                     viewModel::updateFileName
                 )
 
@@ -59,11 +61,10 @@ fun DownloaderScreen(
                     value = uiState.additionalArguments,
                     title = "Additional arguments",
                     placeholder = "",
-                    200.dp,
+
                     viewModel::updateAdditionalArguments
                 )
             }
-
 
 
             // Audio/Video Radio Buttons
@@ -77,23 +78,23 @@ fun DownloaderScreen(
             )
 
 
-
             // Action Buttons
             Row(
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Button(
+                PrimaryButton(
                     onClick = viewModel::startDownload,
                     enabled = !uiState.isDownloading,
                 ) {
-                    Text("Download")
+                    Label("Download")
                 }
                 Spacer(Modifier.width(16.dp))
-                Button(
+                PrimaryButton(
                     onClick = viewModel::abortDownload,
                     enabled = uiState.isDownloading,
+
                 ) {
-                    Text("Abort")
+                    Label("Abort")
                 }
                 Spacer(Modifier.width(16.dp))
             }

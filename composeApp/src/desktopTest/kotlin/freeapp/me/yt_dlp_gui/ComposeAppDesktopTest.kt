@@ -1,6 +1,7 @@
 package freeapp.me.yt_dlp_gui
 
 import freeapp.me.yt_dlp_gui.data.repository.QueueMemoryRepositoryImpl
+import freeapp.me.yt_dlp_gui.data.repository.SettingMemoryRepositoryImpl
 import freeapp.me.yt_dlp_gui.data.service.YTDlpService
 import freeapp.me.yt_dlp_gui.domain.model.queue.QueueItem
 import freeapp.me.yt_dlp_gui.domain.util.isValidUrl
@@ -19,7 +20,7 @@ class ComposeAppDesktopTest {
     @Test
     fun executeCommand() {
 
-        val service = YTDlpService()
+        val service = YTDlpService(SettingMemoryRepositoryImpl())
 
         val command = mutableListOf<String>()
         command.add("yt-dlp")
@@ -35,7 +36,7 @@ class ComposeAppDesktopTest {
     @Test
     fun extractTitle() {
 
-        val service = YTDlpService()
+        val service = YTDlpService(SettingMemoryRepositoryImpl())
 
         runBlocking {
             val extractTitle =

@@ -2,9 +2,6 @@ package freeapp.me.yt_dlp_gui.presentation.queue
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -15,6 +12,8 @@ import freeapp.me.yt_dlp_gui.presentation.global.component.FileSelectableGroup
 import freeapp.me.yt_dlp_gui.presentation.queue.component.InputSectionContainer
 import freeapp.me.yt_dlp_gui.presentation.global.component.ErrorDialog
 import freeapp.me.yt_dlp_gui.presentation.queue.component.QueueList
+import io.kanro.compose.jetbrains.expui.control.Label
+import io.kanro.compose.jetbrains.expui.control.PrimaryButton
 import org.koin.compose.viewmodel.koinViewModel
 
 
@@ -25,7 +24,6 @@ fun QueueScreen(
 
     val uiState by viewModel.uiState.collectAsState()
     val stateVertical = rememberScrollState(0)
-
 
     if (uiState.error != null) {
         ErrorDialog(
@@ -38,7 +36,7 @@ fun QueueScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(start = 10.dp, end = 10.dp),
+            .padding(10.dp),
     ) {
         Column(
             modifier =
@@ -48,7 +46,6 @@ fun QueueScreen(
                     .padding(start = 10.dp, end = 30.dp),
 
             verticalArrangement = Arrangement.spacedBy(24.dp)
-
         ) {
 
             InputSectionContainer(viewModel)
@@ -66,19 +63,19 @@ fun QueueScreen(
             Row(
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Button(
+                PrimaryButton(
                     onClick = viewModel::addQueueItem,
                     enabled = !uiState.isLoading,
                 ) {
-                    Text("Add")
+                    Label("Add")
                 }
                 Spacer(Modifier.width(16.dp))
 
-                Button(
+                PrimaryButton(
                     onClick = viewModel::clearQueues,
                     enabled = uiState.queueItems.isNotEmpty(),
                 ) {
-                    Text("Clear")
+                    Label("Clear")
                 }
                 Spacer(Modifier.width(16.dp))
 
@@ -107,8 +104,8 @@ fun QueueScreen(
             adapter = rememberScrollbarAdapter(stateVertical),
             style = LocalScrollbarStyle.current.copy(
                 thickness = 10.dp, // 스크롤바 두께
-                unhoverColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f), // 마우스 오버 전 색상
-                hoverColor = MaterialTheme.colorScheme.primary // 마우스 오버 시 색상
+//                unhoverColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f), // 마우스 오버 전 색상
+//                hoverColor = MaterialTheme.colorScheme.primary // 마우스 오버 시 색상
             )
         )
     }

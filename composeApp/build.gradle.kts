@@ -31,6 +31,12 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.koin.compose.viewmodel.navigation)
 
+            implementation(compose.desktop.currentOs) {
+                exclude("org.jetbrains.compose.material")
+            }
+            implementation("com.bybutter.compose:compose-jetbrains-expui-theme:2.2.0")
+
+
             implementation(compose.materialIconsExtended)
             implementation(compose.runtime)
             implementation(compose.foundation)

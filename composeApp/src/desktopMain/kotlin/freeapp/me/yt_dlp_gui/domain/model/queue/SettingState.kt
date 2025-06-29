@@ -5,5 +5,5 @@ data class SettingState(
     var ytDlpPath: String = "",
     var audioFormat: AudioFormat = AudioFormat.Default,
     var videoFormat: VideoFormat = VideoFormat.Default,
-    var isDarkTheme: Boolean = true,
+    var isDarkTheme: Boolean = false,
 )

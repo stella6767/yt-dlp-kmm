@@ -6,12 +6,13 @@ import freeapp.me.yt_dlp_gui.data.service.YTDlpService
 import freeapp.me.yt_dlp_gui.domain.model.queue.AudioFormat
 import freeapp.me.yt_dlp_gui.domain.model.queue.SettingState
 import freeapp.me.yt_dlp_gui.domain.model.queue.VideoFormat
+import freeapp.me.yt_dlp_gui.domain.repository.SettingRepository
 import freeapp.me.yt_dlp_gui.presentation.setting.component.FileChooser
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class SettingViewModel(
-    private val ytDlpService: YTDlpService
+    private val settingRepository: SettingRepository,
 ) : ViewModel() {
 
     private val _uiState =
@@ -28,7 +29,7 @@ class SettingViewModel(
     private fun loadSettingState() {
         viewModelScope.launch {
             val settingState =
-                ytDlpService.findSettingState()
+                settingRepository.findSettingState()
             _uiState.update {
                 it.copy(
                     settingState = settingState
@@ -43,7 +44,7 @@ class SettingViewModel(
             _uiState.value.settingState.copy(audioFormat = format)
 
         _uiState.update { state ->
-            state.copy(settingState = ytDlpService.updateSettingState(newState))
+            state.copy(settingState = settingRepository.updateSettingState(newState))
         }
     }
 
@@ -52,7 +53,7 @@ class SettingViewModel(
         val newState =
             _uiState.value.settingState.copy(videoFormat = format)
         _uiState.update { state ->
-            state.copy(settingState = ytDlpService.updateSettingState(newState))
+            state.copy(settingState = settingRepository.updateSettingState(newState))
         }
 
     }
@@ -63,7 +64,7 @@ class SettingViewModel(
             _uiState.value.settingState.copy(saveToDirectory = newDirectory)
 
         _uiState.update { state ->
-            state.copy(settingState = ytDlpService.updateSettingState(newState))
+            state.copy(settingState = settingRepository.updateSettingState(newState))
         }
     }
 
@@ -73,7 +74,7 @@ class SettingViewModel(
             _uiState.value.settingState.copy(ytDlpPath = newPath)
 
         _uiState.update { state ->
-            state.copy(settingState = ytDlpService.updateSettingState(newState))
+            state.copy(settingState = settingRepository.updateSettingState(newState))
         }
     }
 

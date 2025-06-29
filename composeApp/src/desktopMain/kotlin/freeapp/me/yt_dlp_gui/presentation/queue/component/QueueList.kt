@@ -13,7 +13,10 @@ import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material.icons.filled.StopCircle
 import androidx.compose.material.icons.outlined.Schedule
-import androidx.compose.material3.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,6 +29,8 @@ import freeapp.me.yt_dlp_gui.domain.model.queue.DownloadStatus
 import freeapp.me.yt_dlp_gui.domain.model.queue.QueueItem
 import freeapp.me.yt_dlp_gui.domain.util.formatDateTime
 import freeapp.me.yt_dlp_gui.presentation.queue.QueueViewModel
+import io.kanro.compose.jetbrains.expui.control.Icon
+import io.kanro.compose.jetbrains.expui.control.Label
 import org.koin.compose.viewmodel.koinViewModel
 
 
@@ -55,7 +60,7 @@ fun QueueList(
                     modifier = Modifier.fillMaxWidth().height(100.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("No url in queue.", style = MaterialTheme.typography.bodyMedium)
+                    Label("No url in queue.", color = Color.LightGray)
                 }
             } else {
                 LazyColumn(
@@ -82,13 +87,17 @@ fun ListHeader(modifier: Modifier = Modifier) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         // 각 컬럼 헤더
-        Text("status", modifier = Modifier.weight(0.1f), fontWeight = FontWeight.Bold)
-        Text("title", modifier = Modifier.weight(0.3f), fontWeight = FontWeight.Bold)
-        Text("Speed", modifier = Modifier.weight(0.15f), fontWeight = FontWeight.Bold)
-        Text("Progress", modifier = Modifier.weight(0.1f), fontWeight = FontWeight.Bold)
-        Text("Size", modifier = Modifier.weight(0.1f), fontWeight = FontWeight.Bold)
-        Text("Added on", modifier = Modifier.weight(0.15f), fontWeight = FontWeight.Bold)
-        Text("Action", modifier = Modifier.weight(0.1f), fontWeight = FontWeight.Bold)
+        Label("status",
+            modifier = Modifier.weight(0.1f).wrapContentSize(Alignment.Center),
+        )
+        Label("title", modifier = Modifier.weight(0.3f).wrapContentSize(Alignment.Center))
+        Label("Speed", modifier = Modifier.weight(0.15f).wrapContentSize(Alignment.Center))
+        Label("Progress", modifier = Modifier.weight(0.1f).wrapContentSize(Alignment.Center))
+        Label("Size", modifier = Modifier.weight(0.1f).wrapContentSize(Alignment.Center))
+        Label("Added on", modifier = Modifier.weight(0.15f).wrapContentSize(Alignment.Center))
+        Label("Action",
+            modifier = Modifier.weight(0.1f).wrapContentSize(Alignment.Center)
+        )
 
     }
 }
@@ -103,51 +112,55 @@ fun DownloadListItem(
         modifier = modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.small) // 항목 배경색
-            .padding(vertical = 4.dp, horizontal = 8.dp), // 항목 내부 패딩
+            .padding(vertical = 4.dp, horizontal = 0.dp), // 항목 내부 패딩
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
 
         DownloadStatusIcon(
-            modifier = modifier.weight(0.1f),
+            modifier = modifier
+                .weight(0.1f)
+                .size(24.dp) // 아이콘 자체의 고정 크기
+                .wrapContentSize(Alignment.Center) // 아이콘을 할당된 공간 내에서 중앙 정렬
+                .align(Alignment.CenterVertically) // Row 내에서 세로 중앙 정렬
+            ,
             item.status
         )
 
-        Text(
+        Label(
             item.title,
-            modifier = Modifier.weight(0.3f),
-            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.weight(0.3f).wrapContentSize(Alignment.Center),
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
 
-        Text(
+        Label(
             item.speed,
-            modifier = Modifier.weight(0.15f),
-            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.weight(0.15f).wrapContentSize(Alignment.Center),
+            color = Color.Gray,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
 
-        Text(
+            )
+
+        Label(
             "${(item.progress * 100).toInt()}%",
-            modifier = Modifier.weight(0.1f),
+            modifier = Modifier.weight(0.1f).wrapContentSize(Alignment.Center),
             fontSize = 12.sp,
             color = Color.DarkGray,
             style = MaterialTheme.typography.bodyMedium,
         )
 
-        Text(
+        Label(
             item.size,
-            modifier = Modifier.weight(0.1f),
+            modifier = Modifier.weight(0.1f).wrapContentSize(Alignment.Center),
             style = MaterialTheme.typography.bodyMedium,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
 
-        Text(
-            formatDateTime(item.addOnTime) ,
-            modifier = Modifier.weight(0.15f),
+        Label(
+            formatDateTime(item.addOnTime),
+            modifier = Modifier.weight(0.15f).wrapContentSize(Alignment.Center),
             style = MaterialTheme.typography.bodyMedium,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
@@ -175,7 +188,10 @@ fun DownloadListItem(
                     .clickable {
                         viewModel.removeItemById(item.id)
                     }
-                    .weight(0.1f),
+                    .weight(0.1f)
+                    .size(24.dp) // 아이콘 자체의 고정 크기
+                    .wrapContentSize(Alignment.Center) // 아이콘을 할당된 공간 내에서 중앙 정렬
+                    .align(Alignment.CenterVertically), // Row 내에서 세로 중앙 정렬
             )
         }
 
@@ -202,7 +218,7 @@ private fun DownloadStatusIcon(
         modifier = modifier,
         imageVector = imageVector,
         contentDescription = status.name,
-        tint = when (status) {
+        markerColor = when (status) {
             DownloadStatus.PENDING -> Color.Gray
             DownloadStatus.DOWNLOADING -> Color.Blue
             DownloadStatus.COMPLETED -> Color.Green

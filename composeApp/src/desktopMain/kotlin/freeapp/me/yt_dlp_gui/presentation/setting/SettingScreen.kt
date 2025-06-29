@@ -9,7 +9,6 @@ import androidx.compose.material.icons.filled.FileOpen
 import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -21,6 +20,7 @@ import freeapp.me.yt_dlp_gui.domain.model.queue.AudioFormat
 import freeapp.me.yt_dlp_gui.domain.model.queue.VideoFormat
 import freeapp.me.yt_dlp_gui.presentation.setting.component.FolderInputSection2
 import freeapp.me.yt_dlp_gui.presentation.setting.component.SettingDropdownRow
+import io.kanro.compose.jetbrains.expui.control.Label
 import org.koin.compose.viewmodel.koinViewModel
 
 
@@ -53,9 +53,10 @@ fun SettingScreen(
 
         Spacer(Modifier.height(10.dp))
         Divider() // 섹션 구분선
+        Spacer(Modifier.height(8.dp))
 
         SettingsSectionHeader(text = "yt-dlp path", description = "Set your executable file path")
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(4.dp))
 
         FolderInputSection2(
             value = uiState.settingState.ytDlpPath,
@@ -77,6 +78,7 @@ fun SettingScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+
 
             SettingDropdownRow(
                 label = "audio format: ",
@@ -100,7 +102,6 @@ fun SettingScreen(
                     )
                 }
             )
-
         }
 
 
@@ -110,7 +111,7 @@ fun SettingScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text("Theme", style = MaterialTheme.typography.titleMedium)
+            Label("Theme", style = MaterialTheme.typography.titleMedium)
             Switch(
                 checked = uiState.settingState.isDarkTheme,
                 onCheckedChange = { viewModel.updateTheme() }
@@ -125,14 +126,14 @@ fun SettingScreen(
 @Composable
 fun SettingsSectionHeader(text: String, description: String? = null) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        Text(
+        Label(
             text = text,
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 4.dp)
+            modifier = Modifier.padding(bottom = 2.dp)
         )
         description?.let {
-            Text(
+            Label(
                 text = it,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant

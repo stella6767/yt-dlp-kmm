@@ -5,8 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.NetworkCheck
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
+
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +16,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import freeapp.me.yt_dlp_gui.domain.model.DataError
 import freeapp.me.yt_dlp_gui.domain.util.getErrorMessage
+import io.kanro.compose.jetbrains.expui.control.ActionButton
+import io.kanro.compose.jetbrains.expui.control.Icon
+import io.kanro.compose.jetbrains.expui.control.Label
 
 @Composable
 fun ErrorDialog(
@@ -47,7 +49,7 @@ fun ErrorDialog(
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = iconColor,
+                markerColor = iconColor,
                 modifier = Modifier.size(32.dp)
             )
         },
@@ -60,7 +62,7 @@ fun ErrorDialog(
 //            )
         },
         text = {
-            Text(
+            Label(
                 text = getErrorMessage(error),
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
@@ -68,10 +70,10 @@ fun ErrorDialog(
             )
         },
         confirmButton = {
-            Button(
+            ActionButton(
                 onClick = { onDismiss() },
             ) {
-                Text("ok")
+                Label("ok")
             }
 
         }
